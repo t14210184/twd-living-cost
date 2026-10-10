@@ -7,9 +7,43 @@ main{max-width:1000px;margin:auto;padding:14px}.hero{background:#133f60;color:wh
 h1{font-size:1.7rem;line-height:1.3;margin:0}h2{font-size:1.2rem;margin:0 0 15px}.card{background:white;border:1px solid #d3e1ed;border-radius:20px;padding:22px;margin:18px 0}
 .muted{color:#465c6d;font-size:.9rem}.choice{display:flex;flex-wrap:wrap;gap:9px}.choice button{padding:10px 20px;min-height:52px;border:2px solid #b2c6d5;background:#fff;border-radius:12px;font:inherit;cursor:pointer}.choice button[aria-pressed="true"]{background:#d6f6e7;border-color:#126744;font-weight:bold}
 select,input{display:block;width:100%;max-width:560px;padding:10px;border:2px solid #67869b;border-radius:12px;min-height:56px;font:inherit}
-label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size:clamp(1.5rem,5vw,2.7rem);line-height:1.3}.warning{background:#fff3df;border-left:6px solid #c48325;padding:15px;border-radius:6px}.good{background:#e5f7ed;border-left-color:#128057}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#f1f6f9;border-radius:14px;padding:16px}canvas{display:block;width:100%;height:220px}a{color:#135a95}details summary{font-weight:700;cursor:pointer;min-height:50px;padding:10px}@media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
+label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size:clamp(1.5rem,5vw,2.7rem);line-height:1.3}.warning{background:#fff3df;border-left:6px solid #c48325;padding:15px;border-radius:6px}.good{background:#e5f7ed;border-left-color:#128057}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#f1f6f9;border-radius:14px;padding:16px}canvas{display:block;width:100%;height:220px}a{color:#135a95}details summary{font-weight:700;cursor:pointer;min-height:50px;padding:10px}table th,table td{padding:12px 7px;border-bottom:1px solid #d1dee7}table tr:nth-child(even){background:#f1f6f9}h3{font-size:1.04rem;margin:20px 0 10px} .fx-up{color:#9b331f;font-weight:bold}.fx-down{color:#076c57;font-weight:bold}@media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
 </style></head>
 <body><main><header class="hero"><h1>台灣生活費，過去漲了多少？</h1><p>米、蛋、水電、房租，使用政府已發布的數據。<br>不用安裝、不用註冊、不用上傳檔案。</p></header>
+<section class="card" id="fx">
+<h2>國際匯率：八種外幣誰變貴了？</h2>
+<p class="muted">真正的聯準會 H.10 歷史參考匯率。比較同一天的八種外幣；不是銀行現鈔買賣價，也不是盤中報價。</p>
+<p class="warning" role="status" aria-live="polite" id="fxStatus">讀取八種官方外幣資料中，暫不顯示未驗證行情。</p>
+<label for="fxCurrency">你最想看的外幣</label>
+<select id="fxCurrency">
+<option value="USD">美元 USD</option><option value="JPY">日圓 JPY</option>
+<option value="EUR">歐元 EUR</option><option value="CNY">人民幣 CNY</option>
+<option value="GBP">英鎊 GBP</option><option value="AUD">澳幣 AUD</option>
+<option value="KRW">韓元 KRW</option><option value="SGD">新加坡幣 SGD</option>
+</select>
+<div class="cols" style="margin-top:18px">
+<div class="box"><div class="muted">一筆外幣可換多少新台幣（參考中間值）</div><div id="fxRate" class="big">—</div><p class="muted" id="fxRateUnit"></p></div>
+<div class="box"><div class="muted">所選期間的實際漲跌</div><div id="fxMove" class="big">—</div><p id="fxMoveWords">等待官方資料</p></div>
+</div>
+<h3>外幣歷史走勢（起點＝100）</h3>
+<canvas id="fxChart" role="img" aria-label="所選外幣相對新台幣的歷史強弱走勢"></canvas>
+<p class="muted" id="fxRangeWords">資料就緒後顯示原始數值、比較日期、歷史高低點與年度波動程度。</p>
+<h3>八種貨幣在同一期間的比較</h3>
+<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:clamp(16px,2vw,20px)" aria-label="八種貨幣比較排名"><thead><tr><th style="text-align:left">幣別</th><th style="text-align:right">換成台幣</th><th style="text-align:right">漲跌</th></tr></thead><tbody id="fxRanks"><tr><td colspan="3">等待官方資料</td></tr></tbody></table></div>
+<details><summary>把八種外幣放在同一張圖比較</summary>
+<canvas id="fxCompareChart" role="img" aria-label="八種外幣各自從100開始的歷史強弱比較"></canvas>
+<p id="fxCompareWords" class="muted">八種貨幣都以相同起點100做比較，不比較不同單位的絕對數字。</p>
+</details>
+<h3>為什麼這個外幣兌台幣會變動？</h3>
+<p id="fxDrivers">這裡只做可以用數字證明的交叉匯率分解；升降息、通膨和新聞的因果證據鏈尚未建置，不會臆測原因。</p>
+<h3>扣除必要生活物價後，實際能買到的東西？</h3>
+<p id="fxReal" class="box">等待相同月份的官方匯率平均與台灣必要物價資料。</p>
+<p class="muted">這項比較會跟著下方的「生活必需品」選擇自動改變，並只用同月已完整觀測的官方資料。</p>
+<details><summary>匯率數學、資料來源與風險怎麼算？</summary>
+<p>美元：每美元新台幣價＝官方 TWD／USD。日圓、人民幣、韓元、新加坡幣：TWD／USD ÷ 該外幣／USD。歐元、英鎊、澳幣：TWD／USD × USD／該外幣。非交易日不補值，起訖日只能取前十天內確實有資料的共同交易日。</p>
+<p>比較和購買力均採用聯準會紐約市場午間參考匯率，與台灣銀行牌告及實際換匯手續費不同。資料來源：<a href="https://www.federalreserve.gov/releases/h10/">美國聯準會 H.10 官方統計</a>；<a href="https://www.federalreserve.gov/disclaimer.htm">聯準會公開資訊使用規則</a>；台灣物價為主計總處第 9158 號公開資料集。</p>
+</details>
+</section>
 <section class="card"><h2>① 想比較多久以前？</h2><div class="choice" id="periods" aria-label="比較時間">
 <button type="button" data-p="6" aria-pressed="false">半年</button><button type="button" data-p="12" aria-pressed="true">1 年</button><button type="button" data-p="36" aria-pressed="false">3 年</button><button type="button" data-p="60" aria-pressed="false">5 年</button><button type="button" data-p="120" aria-pressed="false">10 年</button></div></section>
 <section class="card"><h2>② 哪種生活必需品？</h2><label for="item">選一種你關心的東西</label><select id="item" disabled><option>等待官方物價資料…</option></select>
@@ -21,4 +55,4 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 <section class="card"><h2>外幣真正購買力</h2><div class="warning">中央銀行長期匯率資料涉及第三方行情再發布權利，尚待釐清；網站不會先填入沒有驗證或沒有授權的數據。</div><p>預定：美元、日圓、歐元、人民幣、英鎊、澳幣、韓元、新加坡幣，半年至十年的真實漲跌與扣除必需品價格後的購買力。</p><a href="https://www.cbc.gov.tw/">開啟中央銀行官方資料</a></section>
 <section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
 <details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
-</main><script src="./app.js"></script></body></html>
+</main><script src="./app.js"></script><script src="./fx.js"></script></body></html>
