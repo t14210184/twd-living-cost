@@ -1,0 +1,12 @@
+{
+  "schema": "v0.1",
+  "status": "NOT_YET_LOADED",
+  "cpi": null,
+  "fx": {
+    "status": "LICENSE_PENDING"
+  },
+  "retail": {
+    "status": "NOT_VERIFIED"
+  },
+  "warning": "This is a project bootstrap, NOT real official data. No placeholder prices are published."
+}
