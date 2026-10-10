@@ -1,6 +1,10 @@
 # 台幣匯率與生存必需品購買力分析｜TWD Living Cost
 
-> 工程狀態：**v6.1 施工中 / NOT YET PRODUCTION-VERIFIED**。此專案剛完成 GitHub 初始化，尚未宣稱資料自動更新、網站正式上線或完整任務驗收。
+> 工程狀態：**v6.1 第一階段 CPI 已成功自動更新並經 Pages HTTPS 公開讀回；完整 FX／購買力／市場原因功能仍在施工中。** 不得將第一階段通過誤報為整體產品完成。
+>
+> **公開網址：** https://t14210184.github.io/twd-living-cost/
+>
+> **官方資料驗收：** [GitHub Actions 成功執行與 G6 公開讀回](https://github.com/t14210184/twd-living-cost/actions/runs/38041367304)，CPI 最新資料月 2026M09，原始 XML SHA-256 記錄於 site/data/manifest.json。
 
 ## 任務
 
@@ -19,7 +23,7 @@
 2. 官方 6563 舊 JSON API 有資料停在 2019 年的既知案例；不將 HTTP 200 當成新鮮數據證據。
 3. 主計總處 CPI 來源只接受 `TYPE=原始值`，須以精確項目代碼、原始基期和同月對齊。
 4. 公開資料觀測日必須可查；**不顯示模擬匯率當作實況**。
-5. GitHub Pages 尚需由倉庫管理者設定一次，實際公開網址與資料讀回尚未驗收。
+5. GitHub Pages Source 已設為 Actions，首頁、app.js、manifest、CPI JSON 已於 2026-10-10 完成 runner 端 HTTPS 公開讀回；進階功能尚未通過驗收。
 
 ## 官方資料與標示
 
@@ -30,4 +34,4 @@
 
 軟體程式及使用者介面的自有程式碼以 MIT License 發布（資料本身仍受原始來源條款拘束）。
 
-**目前唯一可確認的成果**是已建立專用公開 GitHub 倉庫，其他工作依 commit／Actions run／Pages HTTPS 未登入讀回逐關卡驗收。
+**目前可確認成果：** 8 項基本生活必需品 CPI 的官方月指數自動更新、5 種比較期間、生活費回推與 GitHub Pages 公開網站讀回已通過第一階段驗收。八外幣完整歷史、銀行換匯成本、匯率與 CPI 同月購買力、歷史原因證據鏈、零售實價、進階長者真人可用性測試仍為待完成項目。持續以 commit／Actions run／Pages HTTPS 未登入讀回逐關卡驗收。
