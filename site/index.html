@@ -28,9 +28,9 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 <button type="button" data-life-mode="foreign" aria-pressed="false">我每月有外幣可用</button>
 </div>
 <div class="cols life-params">
+<div><label for="lifeCurrency">想對照哪一種外幣？</label><select id="lifeCurrency"><option value="USD">美元 USD</option><option value="JPY">日圓 JPY</option><option value="EUR">歐元 EUR</option><option value="CNY">人民幣 CNY</option><option value="GBP">英鎊 GBP</option><option value="AUD">澳幣 AUD</option><option value="KRW">韓元 KRW</option><option value="SGD">新加坡幣 SGD</option></select></div>
 <div id="lifeTwdBox"><label for="lifeTwdIncome">每月台幣收入（可自行改）</label><input id="lifeTwdIncome" type="number" min="1" max="1000000000" value="35000" inputmode="numeric"></div>
-<div id="lifeForeignBox" hidden><label for="lifeCurrency">外幣種類</label><select id="lifeCurrency"><option value="USD">美元 USD</option><option value="JPY">日圓 JPY</option><option value="EUR">歐元 EUR</option><option value="CNY">人民幣 CNY</option><option value="GBP">英鎊 GBP</option><option value="AUD">澳幣 AUD</option><option value="KRW">韓元 KRW</option><option value="SGD">新加坡幣 SGD</option></select>
-<label for="lifeForeignIncome">每月可用的外幣金額</label><input id="lifeForeignIncome" type="number" min="1" max="1000000000" value="1000" inputmode="numeric"></div>
+<div id="lifeForeignBox" hidden><label for="lifeForeignIncome">每月可用的外幣金額</label><input id="lifeForeignIncome" type="number" min="1" max="1000000000" value="1000" inputmode="numeric"></div>
 </div>
 <p class="muted"><strong>下方金額是可以修改的「示範家庭支出」，不是政府平均值，也不是生存最低標準。</strong> 系統只用官方已發布的歷史價格指數計算變化。</p>
 <details class="life-inputs"><summary>調整我家每月買菜、水電、房租的開支</summary>
