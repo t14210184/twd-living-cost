@@ -67,11 +67,12 @@ function render(){
   const mean=returns.reduce((a,b)=>a+b,0)/returns.length;
   const deviation=Math.sqrt(returns.reduce((a,b)=>a+(b-mean)**2,0)/Math.max(returns.length-1,1))*Math.sqrt(252)*100;
   drawLines("fxChart",rows.map(x=>x[0]),[{color:colors[code],width:3,values:values.map(v=>100*v/base)}]);
-  $("fxRangeWords").textContent="相同官方交易日 "+rows.length+" 天。此幣別最低 NT$"+nums(lo)+"、最高 NT$"+nums(hi)+"／1 單位；歷史年化波動率約 "+deviation.toFixed(2)+"%。圖表把起點設為100，不是台幣實際售價。";
+  const multiplier=code==="JPY"?100:code==="KRW"?1000:1;
+  $("fxRangeWords").textContent="相同官方交易日 "+rows.length+" 天。每 "+nameUnit(code)+"的最低價格 NT$"+nums(lo*multiplier)+"、最高 NT$"+nums(hi*multiplier)+"；歷史年化波動率約 "+deviation.toFixed(2)+"%。圖表把起點設為100，非銀行實際成交價。";
   const rank=Object.keys(currencies).map(c=>({code:c,percent:rate(last,c)/rate(first,c)-1,unit:displayRate(last,c)})).sort((a,b)=>b.percent-a.percent);
   $("fxRanks").replaceChildren(...rank.map(r=>{
     const tr=document.createElement("tr");
-    const a=document.createElement("td");a.textContent=currencies[r.code]+" ("+r.code+")";
+    const a=document.createElement("td");a.textContent=currencies[r.code]+"（"+nameUnit(r.code)+"）";
     const b=document.createElement("td");b.style.textAlign="right";b.textContent=r.unit;
     const c=document.createElement("td");c.style.textAlign="right";c.className=r.percent>=0?"fx-up":"fx-down";
     c.textContent=pct(r.percent)+(r.percent>=0?" ↑":" ↓");
