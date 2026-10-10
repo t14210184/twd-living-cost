@@ -7,13 +7,74 @@ main{max-width:1000px;margin:auto;padding:14px}.hero{background:#133f60;color:wh
 h1{font-size:1.7rem;line-height:1.3;margin:0}h2{font-size:1.2rem;margin:0 0 15px}.card{background:white;border:1px solid #d3e1ed;border-radius:20px;padding:22px;margin:18px 0}
 .muted{color:#465c6d;font-size:.9rem}.choice{display:flex;flex-wrap:wrap;gap:9px}.choice button{padding:10px 20px;min-height:52px;border:2px solid #b2c6d5;background:#fff;border-radius:12px;font:inherit;cursor:pointer}.choice button[aria-pressed="true"]{background:#d6f6e7;border-color:#126744;font-weight:bold}
 select,input{display:block;width:100%;max-width:560px;padding:10px;border:2px solid #67869b;border-radius:12px;min-height:56px;font:inherit}
-label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size:clamp(1.5rem,5vw,2.7rem);line-height:1.3}.warning{background:#fff3df;border-left:6px solid #c48325;padding:15px;border-radius:6px}.good{background:#e5f7ed;border-left-color:#128057}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#f1f6f9;border-radius:14px;padding:16px}canvas{display:block;width:100%;height:220px}a{color:#135a95}details summary{font-weight:700;cursor:pointer;min-height:50px;padding:10px}table th,table td{padding:12px 7px;border-bottom:1px solid #d1dee7}table tr:nth-child(even){background:#f1f6f9}h3{font-size:1.04rem;margin:20px 0 10px} .fx-up{color:#9b331f;font-weight:bold}.fx-down{color:#076c57;font-weight:bold}@media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
+label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size:clamp(1.5rem,5vw,2.7rem);line-height:1.3}.warning{background:#fff3df;border-left:6px solid #c48325;padding:15px;border-radius:6px}.good{background:#e5f7ed;border-left-color:#128057}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#f1f6f9;border-radius:14px;padding:16px}canvas{display:block;width:100%;height:220px}a{color:#135a95}details summary{font-weight:700;cursor:pointer;min-height:50px;padding:10px}table th,table td{padding:12px 7px;border-bottom:1px solid #d1dee7}table tr:nth-child(even){background:#f1f6f9}h3{font-size:1.04rem;margin:20px 0 10px} .fx-up{color:#9b331f;font-weight:bold}.fx-down{color:#076c57;font-weight:bold}.life-params{margin:12px 0}.life-inputs{margin:16px 0}.life-expenses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:10px 0}
+.life-expenses label{margin:0}.life-expenses input{width:100%}.life-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.life-result{padding:15px;border-radius:16px;border:2px solid #c5d7e2;background:#f1f7fb;min-width:0}.life-result .big{overflow-wrap:anywhere}
+.life-answer{padding:18px;border-left:6px solid #0c7560;background:#e8f7ef;border-radius:12px;margin:15px 0}
+.life-answer h3{margin:0 0 8px}.life-answer p{font-weight:700;margin:0}.life-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;margin:12px 0}
+.life-dot{display:inline-block;width:15px;height:15px;border-radius:4px;margin-right:5px}.life-dot.fx{background:#2963a4}.life-dot.costs{background:#b65b24}.life-dot.power{background:#0d8463}
+#lifeForeignBox[hidden],#lifeTwdBox[hidden]{display:none}#lifeChart{height:260px}
+@media(max-width:680px){.life-results{grid-template-columns:1fr}.life-expenses{grid-template-columns:1fr}}
+@media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
 </style></head>
-<body><main><header class="hero"><h1>台灣生活費，過去漲了多少？</h1><p>米、蛋、水電、房租，使用政府已發布的數據。<br>不用安裝、不用註冊、不用上傳檔案。</p></header>
+<body><main><header class="hero"><h1>台灣匯率和生活費合在一起，日子變好過了嗎？</h1><p>同時看八種外幣與米、蛋、水電、房租的真實變動，直接比較生活購買力。<br>不用安裝、不用註冊、不用上傳檔案。</p></header>
 <section class="card"><h2>① 想比較多久以前？</h2><div class="choice" id="periods" aria-label="比較時間">
 <button type="button" data-p="6" aria-pressed="false">半年</button><button type="button" data-p="12" aria-pressed="true">1 年</button><button type="button" data-p="36" aria-pressed="false">3 年</button><button type="button" data-p="60" aria-pressed="false">5 年</button><button type="button" data-p="120" aria-pressed="false">10 年</button></div></section>
+<section class="card" id="living" aria-labelledby="livingTitle">
+<h2 id="livingTitle">生活真的變輕鬆，還是更吃力？</h2>
+<p>把<strong>外幣變貴／變便宜</strong>與<strong>米、蛋、房租、水電漲跌</strong>放在同一張圖。資料由系統自動更新，您只要選自己的收入方式。</p>
+<div class="choice" id="lifeModes" aria-label="我的收入方式">
+<button type="button" data-life-mode="twd" aria-pressed="true">我主要領台幣</button>
+<button type="button" data-life-mode="foreign" aria-pressed="false">我每月有外幣可用</button>
+</div>
+<div class="cols life-params">
+<div id="lifeTwdBox"><label for="lifeTwdIncome">每月台幣收入（可自行改）</label><input id="lifeTwdIncome" type="number" min="1" max="1000000000" value="35000" inputmode="numeric"></div>
+<div id="lifeForeignBox" hidden><label for="lifeCurrency">外幣種類</label><select id="lifeCurrency"><option value="USD">美元 USD</option><option value="JPY">日圓 JPY</option><option value="EUR">歐元 EUR</option><option value="CNY">人民幣 CNY</option><option value="GBP">英鎊 GBP</option><option value="AUD">澳幣 AUD</option><option value="KRW">韓元 KRW</option><option value="SGD">新加坡幣 SGD</option></select>
+<label for="lifeForeignIncome">每月可用的外幣金額</label><input id="lifeForeignIncome" type="number" min="1" max="1000000000" value="1000" inputmode="numeric"></div>
+</div>
+<p class="muted"><strong>下方金額是可以修改的「示範家庭支出」，不是政府平均值，也不是生存最低標準。</strong> 系統只用官方已發布的歷史價格指數計算變化。</p>
+<details class="life-inputs"><summary>調整我家每月買菜、水電、房租的開支</summary>
+<div class="life-expenses" id="lifeExpenses">
+<label for="life-rent">住的地方／住宅租金（元）<input id="life-rent" data-life-key="rent" type="number" min="0" max="10000000" value="12000" inputmode="numeric"></label>
+<label for="life-rice">米類（元）<input id="life-rice" data-life-key="rice" type="number" min="0" max="10000000" value="1200" inputmode="numeric"></label>
+<label for="life-eggs">雞蛋（元）<input id="life-eggs" data-life-key="eggs" type="number" min="0" max="10000000" value="500" inputmode="numeric"></label>
+<label for="life-vegetables">蔬菜（元）<input id="life-vegetables" data-life-key="vegetables" type="number" min="0" max="10000000" value="2200" inputmode="numeric"></label>
+<label for="life-dairy">乳類（元）<input id="life-dairy" data-life-key="dairy" type="number" min="0" max="10000000" value="900" inputmode="numeric"></label>
+<label for="life-water">水費（元）<input id="life-water" data-life-key="water" type="number" min="0" max="10000000" value="350" inputmode="numeric"></label>
+<label for="life-electricity">電費（元）<input id="life-electricity" data-life-key="electricity" type="number" min="0" max="10000000" value="1800" inputmode="numeric"></label>
+<label for="life-gas">燃氣（元）<input id="life-gas" data-life-key="gas" type="number" min="0" max="10000000" value="450" inputmode="numeric"></label>
+</div><p class="muted">某項沒有支出填 0 即可；如果選的項目沒有官方歷史資料，整體結果會停止計算，不會偷偷漏掉它。</p>
+</details>
+<p id="lifeStatus" class="warning" role="status" aria-live="polite">系統正在核對同月份的官方匯率與必要生活物價……</p>
+<p class="muted" id="lifeDates">從實際共同月份開始對比；不同日期的兩筆資料不會硬湊在一起。</p>
+<div class="life-results" aria-live="polite">
+<div class="life-result"><div class="muted">所選外幣對台幣變化</div><div class="big" id="lifeFxChange">—</div><p id="lifeFxNote" class="muted">供匯率影響比較</p></div>
+<div class="life-result"><div class="muted">維持同樣基本生活，成本變化</div><div class="big" id="lifePriceChange">—</div><p class="muted">由您選的必需品推算</p></div>
+<div class="life-result"><div class="muted">同樣收入真正能買到的必需品</div><div class="big" id="lifeRealChange">—</div><p class="muted">同時考慮收入幣別與價格</p></div>
+</div>
+<div class="life-answer"><h3>一句話告訴你</h3><p id="lifeAnswer">資料到齊後，顯示這段時間生活購買力的差別。</p></div>
+<div class="cols">
+<div class="box"><div class="muted">當時同樣必需品，每月估計花費</div><div class="big" id="lifeCostBefore">—</div></div>
+<div class="box"><div class="muted">最近共同月份，同樣必需品花費</div><div class="big" id="lifeCostNow">—</div></div>
+</div>
+<div class="cols" style="margin-top:14px">
+<div class="box"><div class="muted">當時收入能負擔幾份上述生活費</div><div class="big" id="lifeBasketsBefore">—</div></div>
+<div class="box"><div class="muted">現在能負擔幾份</div><div class="big" id="lifeBasketsNow">—</div></div>
+</div>
+<h3>外幣、生活費和實際購買力：同一張圖</h3>
+<div class="life-legend" aria-label="圖表圖例"><span><i class="life-dot fx"></i> 外幣換台幣</span><span><i class="life-dot costs"></i> 同樣生活費</span><span><i class="life-dot power"></i> 實際生活購買力</span></div>
+<canvas id="lifeChart" role="img" aria-label="同一月份三條線，外幣兌台幣、必要生活費與實際購買力的相對變動"></canvas>
+<p id="lifeExplanation" class="muted">三條線起點都設為 100；是歷史變化的相對比較，不是商品售價。</p>
+<details><summary>這些數字怎麼算？有哪些不能直接推論？</summary>
+<p>外幣：美國聯準會 H.10 官方「月平均參考匯率」。民生物價：主計總處 9158 月指數。必需品籃子：您輸入每項的本期開支 × （該項過去 CPI ÷ 本期 CPI），逐項相加得到過去相同消費組合的估計成本。</p>
+<p>若收入為固定台幣，假設名目台幣收入前後不變，生活購買力只由必需品價格變化決定；匯率可能透過進口成本間接影響國內售價，但沒有產業傳導資料時，<strong>不能直接把匯率漲跌加到你的台幣收入，也不能說它造成全部物價漲幅</strong>。</p>
+<p>若每月固定能用相同數量外幣，則用同月份匯率換成台幣，再除以估算必要生活費。沒有包含銀行買賣價差、手續費、實際薪資成長，也不代表所有民生品的零售實售價。</p>
+<p>米、蛋等是物價「指數」不是每公斤／每顆售價；類別指數不等於精確的一籃實物價格。電費有夏季／非夏季因素，半年比較特別要留意。</p>
+<p>來源：<a href="https://www.federalreserve.gov/releases/h10/">聯準會 H.10</a> 與 <a href="https://data.gov.tw/dataset/9158">主計總處必要生活細項物價</a>。</p></details>
+</section>
+
 <section class="card" id="fx">
-<h2>國際匯率：八種外幣誰變貴了？</h2>
+<h2>進階查詢：國際八幣與歷史走勢</h2>
 <p class="muted">真正的聯準會 H.10 歷史參考匯率。比較同一天的八種外幣；不是銀行現鈔買賣價，也不是盤中報價。</p>
 <p class="warning" role="status" aria-live="polite" id="fxStatus">讀取八種官方外幣資料中，暫不顯示未驗證行情。</p>
 <label for="fxCurrency">你最想看的外幣</label>
@@ -47,13 +108,12 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 </details>
 </section>
 
-<section class="card"><h2>② 哪種生活必需品？</h2><label for="item">選一種你關心的東西</label><select id="item" disabled><option>等待官方物價資料…</option></select>
+<section class="card"><h2>進階查詢：單項必需品物價走勢</h2><label for="item">選一種你關心的東西</label><select id="item" disabled><option>等待官方物價資料…</option></select>
 <div class="cols" style="margin-top:18px"><div class="box"><div class="muted">比以前漲跌多少</div><div id="change" class="big">—</div><div id="plain">尚未載入</div></div><div class="box"><div class="muted">比較的真實月份</div><div id="months" style="font-weight:bold">—</div><p class="muted">顯示的是官方價格指數變化，不是每顆雞蛋或每公斤米的售價。</p></div></div>
 <div id="season" class="warning" hidden>電費有夏月／非夏月因素，半年漲幅可能包含季節差異，請搭配同月年度比較閱讀。</div>
 <canvas id="chart" role="img" aria-label="價格指數變動圖"></canvas><p id="chartWords" class="muted">資料載入後會列出指數起訖數字。</p>
 </section>
-<section class="card"><h2>③ 假設現在每月花多少錢？</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
-<section class="card"><h2>外幣真正購買力</h2><div class="warning">中央銀行長期匯率資料涉及第三方行情再發布權利，尚待釐清；網站不會先填入沒有驗證或沒有授權的數據。</div><p>預定：美元、日圓、歐元、人民幣、英鎊、澳幣、韓元、新加坡幣，半年至十年的真實漲跌與扣除必需品價格後的購買力。</p><a href="https://www.cbc.gov.tw/">開啟中央銀行官方資料</a></section>
+<section class="card"><h2>進階試算：單一品項生活費</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
 <section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
 <details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
-</main><script src="./app.js"></script><script src="./fx.js"></script></body></html>
+</main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script></body></html>
