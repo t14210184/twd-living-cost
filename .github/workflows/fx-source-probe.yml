@@ -1,0 +1,39 @@
+name: Probe US Federal Reserve H10 FX source
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fx-source-probe.yml'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Download H.10 daily FRED series and inspect 10 year coverage
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv, io, urllib.request, datetime
+          codes=['DEXTAUS','DEXJPUS','DEXCHUS','DEXKOUS','DEXSIUS','DEXUSUK','DEXUSEG','DEXUSAL']
+          url='https://fred.stlouisfed.org/graph/fredgraph.csv?id='+','.join(codes)+'&cosd=2016-09-01'
+          req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; TWD-Living-Cost/1.0)'})
+          try:
+            with urllib.request.urlopen(req,timeout=40) as r: content=r.read(15_000_000); print('URL',r.geturl(),'STATUS',r.status,'TYPE',r.headers.get('Content-Type'),'BYTES',len(content))
+            rows=list(csv.DictReader(io.StringIO(content.decode('utf-8-sig'))))
+            print('HEADERS',list(rows[0]) if rows else [])
+            print('ROWS',len(rows),'FIRST',rows[0] if rows else {},'LAST',rows[-1] if rows else {})
+            for code in codes:
+              values=[(x.get('observation_date') or x.get('DATE'),x.get(code)) for x in rows if x.get(code) not in ('','.',None)]
+              print('COVERAGE',code,'COUNT',len(values),'START',values[0] if values else None,'END',values[-1] if values else None)
+          except Exception as exc:
+            print('FED_BATCH_FAIL',str(exc))
+          for code in ['DEXTAUS','DEXUSEG']:
+            url='https://fred.stlouisfed.org/graph/fredgraph.csv?id='+code+'&cosd=2016-09-01'
+            try:
+              with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'}),timeout=35) as r: content=r.read(600000)
+              lines=content.decode('utf-8-sig').splitlines()
+              print('SINGLE',code,len(lines),lines[0],lines[-1])
+            except Exception as exc:print('SINGLE_FAIL',code,str(exc))
+          PY
