@@ -1,0 +1,14 @@
+{
+  "cbc_fx_daily": {
+    "state": "LICENSE_PENDING",
+    "reason": "CBC 6563 describes Thomson Reuters underlying daily data; check public reuse rights before republishing time series."
+  },
+  "dgbas_cpi_9158": {
+    "state": "OGDL_V1_CREDIT_REQUIRED",
+    "source": "https://data.gov.tw/dataset/9158"
+  },
+  "ndc_retail": {
+    "state": "NOT_VERIFIED",
+    "source": "https://price.ndc.gov.tw/p/zh_tw/necessities"
+  }
+}
