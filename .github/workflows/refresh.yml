@@ -1,0 +1,55 @@
+name: Official CPI refresh and deploy
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'site/**'
+      - 'config/**'
+      - '.github/workflows/refresh.yml'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: official-cpi-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Test CPI contract
+        run: python -m unittest discover -s tests -v
+      - name: Download and verify official CPI
+        run: python scripts/update_cpi.py
+      - name: Reject unauthorized FX and retail series
+        run: |
+          test ! -d site/data/fx
+          test ! -d site/data/retail
+          test ! -f site/data/fx.csv
+      - name: Commit reproducible, approved CPI if changed
+        run: |
+          if ! git diff --quiet -- site/data/; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add site/data/
+            git commit -m "data: refresh official DGBAS CPI"
+            git push
+          fi
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy within same workflow
+        uses: actions/deploy-pages@v4
