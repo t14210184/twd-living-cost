@@ -55,3 +55,5 @@ jobs:
           path: site
       - name: Deploy within same workflow
         uses: actions/deploy-pages@v4
+      - name: Independently read back public Pages and data integrity
+        run: python scripts/verify_live.py
