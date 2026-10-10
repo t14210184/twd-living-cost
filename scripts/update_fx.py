@@ -198,6 +198,7 @@ def run():
     manifest_path = DATA/"manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["fx"] = meta
+    manifest["status"] = "CPI_AND_OFFICIAL_FX_VERIFIED_RETAIL_PENDING"
     DATA.mkdir(parents=True, exist_ok=True)
     (DATA/"fx.json").write_text(json.dumps(fx, ensure_ascii=False, separators=(",",":"))+"\n",encoding="utf-8")
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True)+"\n",encoding="utf-8")
