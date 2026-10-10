@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/browser-e2e.yml'
+      - 'ci/browser_e2e.py'
 permissions:
   contents: read
 jobs:
@@ -17,7 +18,21 @@ jobs:
           python-version: '3.12'
       - name: Install Selenium web testing
         run: python -m pip install 'selenium>=4.25,<5'
-      - name: Check actual deployed FX and CPI in Chrome (desktop+mobile)
+      - name: Wait for integrated public dashboard deployment
+        run: |
+          python - <<'PY'
+          import requests,time
+          url='https://t14210184.github.io/twd-living-cost/'
+          for n in range(12):
+              try:
+                  r=requests.get(url,timeout=12,params={'run':n})
+                  if r.ok and 'id="living"' in r.text and 'id="lifeChart"' in r.text:
+                      print('Integrated public home is live',r.status_code); break
+              except Exception as ex: print('Waiting for public site:',str(ex))
+              if n==11: raise RuntimeError('Integrated homepage not yet live')
+              time.sleep(5)
+          PY
+      - name: Check integrated FX and necessities in actual Chrome (desktop + 390px mobile)
         run: python ci/browser_e2e.py
       - name: Upload real-browser screenshots
         if: always()
