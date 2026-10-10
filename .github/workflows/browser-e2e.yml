@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install Selenium web testing
-        run: python -m pip install 'selenium>=4.25,<5'
+        run: python -m pip install 'selenium>=4.25,<5' 'requests>=2.31,<3'
       - name: Wait for integrated public dashboard deployment
         run: |
           python - <<'PY'
