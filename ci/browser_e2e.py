@@ -22,6 +22,27 @@ try:
     wait=WebDriverWait(driver,45)
     wait.until(lambda d: "聯準會 H.10 已載入" in d.find_element(By.ID,"fxStatus").text)
     wait.until(lambda d: "官方 CPI" in d.find_element(By.ID,"status").text)
+    # Verify primary, *integrated* living-impact dashboard, not just separate charts.
+    wait.until(lambda d: "%" in d.find_element(By.ID,"lifeRealChange").text)
+    assert "維持同樣" in driver.find_element(By.ID,"lifeAnswer").text
+    assert "不代表你的台幣薪水" in driver.find_element(By.ID,"lifeAnswer").text
+    assert driver.find_element(By.ID,"lifeChart").get_attribute("width")!='0'
+    old_impact=driver.find_element(By.ID,"lifeRealChange").text
+    driver.find_element(By.CSS_SELECTOR,'button[data-life-mode="foreign"]').click()
+    assert driver.find_element(By.CSS_SELECTOR,'button[data-life-mode="foreign"]').get_attribute("aria-pressed")=="true"
+    assert "固定" in driver.find_element(By.ID,"lifeAnswer").text or "假設每月" in driver.find_element(By.ID,"lifeAnswer").text
+    assert driver.find_element(By.ID,"lifeRealChange").text != old_impact
+    Select(driver.find_element(By.ID,"lifeCurrency")).select_by_value("JPY")
+    assert "日圓" in driver.find_element(By.ID,"lifeAnswer").text
+    driver.find_element(By.CSS_SELECTOR,'#living .life-inputs summary').click()
+    before_cost=driver.find_element(By.ID,"lifeCostNow").text
+    rent=driver.find_element(By.ID,"life-rent")
+    rent.clear()
+    rent.send_keys("20000")
+    assert before_cost != driver.find_element(By.ID,"lifeCostNow").text
+    assert "同樣一籃" in driver.find_element(By.ID,"lifeAnswer").text
+    driver.find_element(By.CSS_SELECTOR,'button[data-life-mode="twd"]').click()
+    assert "不代表你的台幣薪水" in driver.find_element(By.ID,"lifeAnswer").text
     assert "NT$" in driver.find_element(By.ID,"fxRate").text
     assert len(driver.find_elements(By.CSS_SELECTOR,"#fxRanks tr"))==8
     assert "扣除後" in driver.find_element(By.ID,"fxReal").text
@@ -42,8 +63,10 @@ try:
     client=driver.execute_script("return document.documentElement.clientWidth")
     assert width<=client+2, f"Mobile page horizontal overflow: {width}>{client}"
     assert driver.find_element(By.ID,"fxRate").is_displayed()
+    assert driver.find_element(By.ID,"lifeRealChange").is_displayed()
+    assert driver.find_element(By.ID,"lifeCostNow").is_displayed()
     driver.save_screenshot(str(OUT/"mobile_live_fx.png"))
-    print("E2E FX PASS",URL,"8 currencies; 10yr; 100 JPY; housing CPI real purchasing power; mobile width",client)
+    print("E2E INTEGRATED LIVING PASS",URL,"8 currency FX; TWD/FX scenarios; personal basket; official CPI; 10yr; phone width",client)
     print("E2E CPI",driver.find_element(By.ID,"status").text)
 finally:
     driver.quit()
