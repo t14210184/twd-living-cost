@@ -53,3 +53,28 @@ jobs:
               openssl x509 -inform der -in "$f" -noout -subject -issuer -dates 2>/dev/null || openssl x509 -in "$f" -noout -subject -issuer -dates 2>/dev/null || true
             done
           fi
+
+      - name: Verify TWCA official intermediate chain without disabling TLS
+        shell: bash
+        run: |
+          set -e
+          curl --fail --location --show-error --max-time 30 https://sslserver.twca.com.tw/cacert/Cyber_SSL_2023.crt -o /tmp/cyber_ssl.crt
+          curl --fail --location --show-error --max-time 30 https://sslserver.twca.com.tw/cacert/GlobalCrossCyber_2022.crt -o /tmp/cross_cyber.crt
+          sha256sum /tmp/cyber_ssl.crt /tmp/cross_cyber.crt
+          for pair in 'cyber_ssl' 'cross_cyber'; do
+            openssl x509 -inform DER -in /tmp/$pair.crt -out /tmp/$pair.pem -outform PEM
+            openssl x509 -in /tmp/$pair.pem -noout -subject -issuer -dates
+          done
+          cat /tmp/cyber_ssl.pem /tmp/cross_cyber.pem >/tmp/untrusted_chain.pem
+          openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt -untrusted /tmp/untrusted_chain.pem /tmp/dgbas-leaf.pem
+          python - <<'PY'
+          import certifi, requests
+          with open('/tmp/cpi_ca_bundle.pem','wb') as out:
+            out.write(open(certifi.where(),'rb').read())
+            out.write(b'\n')
+            out.write(open('/tmp/untrusted_chain.pem','rb').read())
+          url='https://ws.dgbas.gov.tw/001/Upload/461/relfile/11525/230543/pr0101a3m.xml'
+          r=requests.get(url,timeout=70,verify='/tmp/cpi_ca_bundle.pem')
+          r.raise_for_status()
+          print('VERIFIED_TLS_CPI_STATUS',r.status_code,'bytes',len(r.content),'prefix',r.content[:100])
+          PY
