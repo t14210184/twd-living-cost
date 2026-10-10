@@ -22,5 +22,5 @@
     "status": "NOT_VERIFIED"
   },
   "schema": "v1",
-  "status": "CPI_ONLY_FX_LICENSE_PENDING"
+  "status": "CPI_AND_OFFICIAL_FX_VERIFIED_RETAIL_PENDING"
 }
