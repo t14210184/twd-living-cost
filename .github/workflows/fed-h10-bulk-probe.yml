@@ -1,0 +1,29 @@
+name: Probe official Federal Reserve H10 bulk XML
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/fed-h10-bulk-probe.yml']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Download and inspect official entire H10 archive
+        run: |
+          python - <<'PY'
+          import requests,hashlib,zipfile,io,time
+          url='https://www.federalreserve.gov/datadownload/Output.aspx?filetype=zip&rel=H10'
+          try:
+            t=time.monotonic()
+            r=requests.get(url,timeout=90,headers={'User-Agent':'TWD-Living-Cost open-data verification/1.0'})
+            print('STATUS',r.status_code,'TYPE',r.headers.get('Content-Type'),'LENGTH',len(r.content),'TIME',round(time.monotonic()-t,1),'SHA256',hashlib.sha256(r.content).hexdigest())
+            r.raise_for_status(); z=zipfile.ZipFile(io.BytesIO(r.content))
+            names=z.namelist()
+            print('MEMBERS',[(n,z.getinfo(n).file_size) for n in names[:12]])
+            for n in names[:2]:
+              with z.open(n) as f:
+                print('SAMPLE_XML',n,repr(f.read(6500))[:6800])
+          except Exception as ex:print('H10_BULK_FAIL',repr(ex));raise
+          PY
