@@ -27,3 +27,24 @@ jobs:
                 print('SAMPLE_XML',n,repr(f.read(6500))[:6800])
           except Exception as ex:print('H10_BULK_FAIL',repr(ex));raise
           PY
+
+      - name: Inspect exact daily FX series identifiers and value directions
+        run: |
+          python - <<'PY'
+          import requests,zipfile,io,xml.etree.ElementTree as E
+          url='https://www.federalreserve.gov/datadownload/Output.aspx?filetype=zip&rel=H10'
+          z=zipfile.ZipFile(io.BytesIO(requests.get(url,timeout=60).content))
+          wanted={'TWD','JP','JPY','CH','CNY','KO','KRW','SI','SGD','EU','EUR','UK','GBP','AL','AUD'}
+          found=[]
+          with z.open('H10_data.xml') as src:
+            for ev,elem in E.iterparse(src,events=('end',)):
+              if elem.tag.endswith('Series'):
+                a=elem.attrib; code=a.get('CURRENCY',''); name=a.get('SERIES_NAME','')
+                if code in wanted or any(p in name for p in ('TW','JP','CH','KO','SI','EU','UK','AL')):
+                  obs=[n for n in elem if n.tag.endswith('Obs')]
+                  if obs:
+                    found.append((code,a.get('FREQ'),a.get('FX'),name,a.get('UNIT'),len(obs),obs[0].attrib,obs[-1].attrib))
+                elem.clear()
+          for x in found:print('FX_SERIES',repr(x))
+          print('MATCHING_SERIES',len(found))
+          PY
