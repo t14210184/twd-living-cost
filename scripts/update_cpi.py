@@ -1,5 +1,5 @@
 """DGBAS monthly CPI ETL; no fabricated values, no TLS bypass, no FX redistribution."""
-import csv, hashlib, io, json, re, sys, xml.etree.ElementTree as ET
+import csv, hashlib, io, json, os, re, sys, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -57,7 +57,7 @@ def build(payload):
     return output,manifest
 
 def run():
-    response=requests.get(URL,timeout=60,headers={"User-Agent":"TWD-Living-Cost/0.1"},allow_redirects=False)
+    response=requests.get(URL,timeout=90,headers={"User-Agent":"TWD-Living-Cost/0.1"},allow_redirects=False,verify=os.environ.get("CPI_CA_BUNDLE",True))
     response.raise_for_status()
     if "text/html" in response.headers.get("Content-Type","").lower(): raise ValueError("CPI HTML error body")
     if not response.content.strip().startswith(b"<") and not response.content.strip().startswith(b"\xef\xbb\xbf<"): raise ValueError("Not XML")
