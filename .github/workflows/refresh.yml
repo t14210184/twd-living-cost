@@ -33,8 +33,15 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Prepare pinned official TWCA chain and verify host TLS
         run: python scripts/prepare_cpi_tls.py
+      - name: Validate bundled JavaScript and HTML
+        run: |
+          node --check site/app.js
+          node --check site/fx.js
+          grep -q 'id="fxChart"' site/index.html
       - name: Download and verify official CPI
         run: python scripts/update_cpi.py
+      - name: Obtain and verify 10-year US Federal Reserve H10 FX
+        run: python scripts/update_fx.py
       - name: Reject unauthorized FX and retail series
         run: |
           test ! -d site/data/fx
