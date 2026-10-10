@@ -1,0 +1,37 @@
+{
+  "items": {
+    "rice": {
+      "label": "米",
+      "name": "1米"
+    },
+    "eggs": {
+      "label": "雞蛋",
+      "name": "20雞蛋"
+    },
+    "rent": {
+      "label": "住宅租金",
+      "name": "195住宅租金"
+    },
+    "water": {
+      "label": "水費",
+      "name": "(2)水費"
+    },
+    "electricity": {
+      "label": "電費",
+      "name": "(3)電費",
+      "seasonal": true
+    },
+    "gas": {
+      "label": "燃氣",
+      "name": "(1)燃氣"
+    },
+    "vegetables": {
+      "label": "蔬菜",
+      "name": "7.蔬菜"
+    },
+    "dairy": {
+      "label": "乳類",
+      "name": "11.乳類"
+    }
+  }
+}
