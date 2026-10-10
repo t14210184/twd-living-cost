@@ -1,0 +1,55 @@
+name: Diagnose official CPI TLS chain (read-only)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cpi-tls-diagnostic.yml'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Inspect DGBAS presented certificates (diagnostic only)
+        shell: bash
+        run: |
+          set +e
+          echo | timeout 15 openssl s_client -showcerts -connect ws.dgbas.gov.tw:443 -servername ws.dgbas.gov.tw > /tmp/cpi-tls-chain.txt 2>&1
+          grep -E '^(depth=|verify error:|Verify return code:|Certificate chain| [0-9]+ s:|   i:)' /tmp/cpi-tls-chain.txt | head -n 25
+          sed -n '/BEGIN CERTIFICATE/,/END CERTIFICATE/p' /tmp/cpi-tls-chain.txt | sed -n '/BEGIN CERTIFICATE/,/END CERTIFICATE/p' | head -n 50 >/tmp/dgbas-leaf.pem
+          openssl x509 -in /tmp/dgbas-leaf.pem -noout -subject -issuer -dates -ext authorityInfoAccess 2>&1 || true
+      - name: Probe verified official URLs, no SSL bypass
+        run: |
+          python - <<'PY'
+          import requests
+          urls=[
+            "https://ws.dgbas.gov.tw/001/Upload/461/relfile/11525/230543/pr0101a3m.xml",
+            "https://www.dgbas.gov.tw/public/data/open/stat/price/PR0101A3M.xml",
+            "https://www.dgbas.gov.tw/Public/Data/OpenData/Stat/Price/PR0101A3M.xml",
+            "https://data.gov.tw/dataset/9158",
+            "https://ssl.twca.com.tw/repository",
+          ]
+          for url in urls:
+            try:
+              r=requests.get(url,timeout=15,stream=True)
+              print(url, r.status_code, r.url, r.headers.get("content-type"),r.headers.get("content-length"))
+              r.close()
+            except Exception as exc: print(url, type(exc).__name__,str(exc)[:190])
+          PY
+      - name: Fetch and inventory TWCA official CA bundle (do not install automatically)
+        shell: bash
+        run: |
+          set +e
+          url="https://ssl.twca.com.tw/upload/saveArea/filePage/20240930/32293e03b98743d2bb1bd08dc4162384/32293e03b98743d2bb1bd08dc4162384.zip"
+          curl --fail --show-error --location --max-time 40 "$url" -o /tmp/twca-ca.zip
+          if [ -s /tmp/twca-ca.zip ]; then
+            sha256sum /tmp/twca-ca.zip
+            unzip -l /tmp/twca-ca.zip | tail -n 25
+            mkdir -p /tmp/twca-extract
+            unzip -oq /tmp/twca-ca.zip -d /tmp/twca-extract
+            find /tmp/twca-extract -type f -print | head -n 20
+            find /tmp/twca-extract -type f | while read -r f; do
+              openssl x509 -inform der -in "$f" -noout -subject -issuer -dates 2>/dev/null || openssl x509 -in "$f" -noout -subject -issuer -dates 2>/dev/null || true
+            done
+          fi
