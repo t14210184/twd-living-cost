@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>台灣生活費變貴了嗎？</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#16324a;font:20px/1.65 system-ui,-apple-system,"Noto Sans TC",sans-serif}
+main{max-width:1000px;margin:auto;padding:14px}.hero{background:#133f60;color:white;border-radius:20px;padding:28px}
+h1{font-size:1.7rem;line-height:1.3;margin:0}h2{font-size:1.2rem;margin:0 0 15px}.card{background:white;border:1px solid #d3e1ed;border-radius:20px;padding:22px;margin:18px 0}
+.muted{color:#465c6d;font-size:.9rem}.choice{display:flex;flex-wrap:wrap;gap:9px}.choice button{padding:10px 20px;min-height:52px;border:2px solid #b2c6d5;background:#fff;border-radius:12px;font:inherit;cursor:pointer}.choice button[aria-pressed="true"]{background:#d6f6e7;border-color:#126744;font-weight:bold}
+select,input{display:block;width:100%;max-width:560px;padding:10px;border:2px solid #67869b;border-radius:12px;min-height:56px;font:inherit}
+label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size:clamp(1.5rem,5vw,2.7rem);line-height:1.3}.warning{background:#fff3df;border-left:6px solid #c48325;padding:15px;border-radius:6px}.good{background:#e5f7ed;border-left-color:#128057}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{background:#f1f6f9;border-radius:14px;padding:16px}canvas{display:block;width:100%;height:220px}a{color:#135a95}details summary{font-weight:700;cursor:pointer;min-height:50px;padding:10px}@media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
+</style></head>
+<body><main><header class="hero"><h1>台灣生活費，過去漲了多少？</h1><p>米、蛋、水電、房租，使用政府已發布的數據。<br>不用安裝、不用註冊、不用上傳檔案。</p></header>
+<section class="card"><h2>① 想比較多久以前？</h2><div class="choice" id="periods" aria-label="比較時間">
+<button type="button" data-p="6" aria-pressed="false">半年</button><button type="button" data-p="12" aria-pressed="true">1 年</button><button type="button" data-p="36" aria-pressed="false">3 年</button><button type="button" data-p="60" aria-pressed="false">5 年</button><button type="button" data-p="120" aria-pressed="false">10 年</button></div></section>
+<section class="card"><h2>② 哪種生活必需品？</h2><label for="item">選一種你關心的東西</label><select id="item" disabled><option>等待官方物價資料…</option></select>
+<div class="cols" style="margin-top:18px"><div class="box"><div class="muted">比以前漲跌多少</div><div id="change" class="big">—</div><div id="plain">尚未載入</div></div><div class="box"><div class="muted">比較的真實月份</div><div id="months" style="font-weight:bold">—</div><p class="muted">顯示的是官方價格指數變化，不是每顆雞蛋或每公斤米的售價。</p></div></div>
+<div id="season" class="warning" hidden>電費有夏月／非夏月因素，半年漲幅可能包含季節差異，請搭配同月年度比較閱讀。</div>
+<canvas id="chart" role="img" aria-label="價格指數變動圖"></canvas><p id="chartWords" class="muted">資料載入後會列出指數起訖數字。</p>
+</section>
+<section class="card"><h2>③ 假設現在每月花多少錢？</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
+<section class="card"><h2>外幣真正購買力</h2><div class="warning">中央銀行長期匯率資料涉及第三方行情再發布權利，尚待釐清；網站不會先填入沒有驗證或沒有授權的數據。</div><p>預定：美元、日圓、歐元、人民幣、英鎊、澳幣、韓元、新加坡幣，半年至十年的真實漲跌與扣除必需品價格後的購買力。</p><a href="https://www.cbc.gov.tw/">開啟中央銀行官方資料</a></section>
+<section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
+<details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
+</main><script src="./app.js"></script></body></html>
