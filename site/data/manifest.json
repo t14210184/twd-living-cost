@@ -1,12 +1,16 @@
 {
-  "schema": "v0.1",
-  "status": "NOT_YET_LOADED",
-  "cpi": null,
+  "cpi": {
+    "last_observed_month": "2026M09",
+    "sha256": "ffdd6219a81e6c30b6a631d6c1a5352e8ef646b3b5a0990b62bd46164cf34d76",
+    "source": "https://data.gov.tw/dataset/9158"
+  },
   "fx": {
     "status": "LICENSE_PENDING"
   },
+  "release_id": "4b3222f2de7c4ae2ad65905700ec58b8424be54a70cf09781bddfea25014e527",
   "retail": {
     "status": "NOT_VERIFIED"
   },
-  "warning": "This is a project bootstrap, NOT real official data. No placeholder prices are published."
+  "schema": "v1",
+  "status": "CPI_ONLY_FX_LICENSE_PENDING"
 }
