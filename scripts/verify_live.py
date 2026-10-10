@@ -24,6 +24,8 @@ def verify_once():
         home = read(session, "", release)
         app = read(session, "app.js", release)
         fxjs = read(session, "fx.js", release)
+        lifemath = read(session, "life_math.js", release)
+        lifeui = read(session, "life.js", release)
         remote_manifest = read(session, "data/manifest.json", release).json()
         data = read(session, "data/cpi.json", release).json()
         fxdata = read(session, "data/fx.json", release).json()
@@ -31,6 +33,10 @@ def verify_once():
         # The content check is mandatory, but the URL may contain arbitrary subpaths.
         if "台灣生活費" not in home.text:
             raise RuntimeError("Site HTML not the expected senior-friendly dashboard")
+    if 'id="living"' not in home.text or 'id="lifeChart"' not in home.text or 'data-life-mode="twd"' not in home.text:
+        raise RuntimeError("The integrated senior purchasing-power home page is missing")
+    if "LifeMath" not in lifemath.text or "purchasingChange" not in lifeui.text or 'fx.release_id' not in lifemath.text + lifeui.text and 'meta.fx?.release_id' not in lifeui.text:
+        raise RuntimeError("Household FX + CPI model scripts are missing")
     if 'id="fxChart"' not in home.text or 'id="fxRanks"' not in home.text:
         raise RuntimeError("FX UI missing from public homepage")
     if "H.10" not in fxjs.text or "renderReal" not in fxjs.text:
