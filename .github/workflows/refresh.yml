@@ -9,6 +9,7 @@ on:
       - 'scripts/**'
       - 'tests/**'
       - 'site/**'
+      - 'interactive3d/**'
       - 'config/**'
       - '.github/workflows/refresh.yml'
 permissions:
@@ -27,6 +28,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
       - name: Test CPI contract
@@ -43,6 +47,8 @@ jobs:
           node --check site/reality.js
           node --check site/play_math.js
           node --check site/play.js
+          grep -q 'id="living-city-root"' site/index.html
+          grep -q 'src="./scene-assets/living-city.js"' site/index.html
           node --test tests/life.test.cjs
           node --test tests/reality.test.cjs
           node --test tests/play.test.cjs
@@ -51,6 +57,13 @@ jobs:
           grep -q 'id="fxChart"' site/index.html
           grep -q 'id="living"' site/index.html
           grep -q 'id="lifeChart"' site/index.html
+      - name: Compile modular React Three Fiber 3D scene for static GitHub Pages
+        run: |
+          cd interactive3d
+          npm install --no-audit --no-fund
+          npm run build
+          test -s ../site/scene-assets/living-city.js
+          test "$(wc -c < ../site/scene-assets/living-city.js)" -lt 4000000
       - name: Download and verify official CPI
         run: python scripts/update_cpi.py
       - name: Obtain and verify 10-year US Federal Reserve H10 FX
