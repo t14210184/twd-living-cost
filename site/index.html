@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>台灣生活費變貴了嗎？</title>
+<title>台灣庶民生存購買力｜到手收入・必要開支・匯率</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#16324a;font:20px/1.65 system-ui,-apple-system,"Noto Sans TC",sans-serif}
 main{max-width:1000px;margin:auto;padding:14px}.hero{background:#133f60;color:white;border-radius:20px;padding:28px}
@@ -16,8 +16,66 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 #lifeForeignBox[hidden],#lifeTwdBox[hidden]{display:none}#lifeChart{height:260px}
 @media(max-width:680px){.life-results{grid-template-columns:1fr}.life-expenses{grid-template-columns:1fr}}
 @media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
-</style></head>
-<body><main><header class="hero"><h1>台灣匯率和生活費合在一起，日子變好過了嗎？</h1><p>同時看八種外幣與米、蛋、水電、房租的真實變動，直接比較生活購買力。<br>不用安裝、不用註冊、不用上傳檔案。</p></header>
+</style><link rel="stylesheet" href="./reality.css"></head>
+<body><main><header class="hero"><h1>台幣收入，真的夠過日子嗎？</h1><p>從屏東庶民的生活出發：先看每月真正到手多少，食、住、行、醫扣完還剩多少。再往下比較八種外幣和官方物價。<br>不用安裝、不用註冊、不用上傳資料。</p></header>
+<section class="card reality-card" id="reality" aria-labelledby="reality-heading">
+  <h2 id="reality-heading">我的台幣收入，夠不夠過生活？</h2>
+  <p>以你的實際到手金額與必要開支計算。先知道每月剩多少錢，再研究通膨與國際匯率。</p>
+  <fieldset class="reality-profiles"><legend>我主要靠什麼台幣收入？</legend>
+    <label><input type="radio" name="reality-profile" value="worker" checked> 工作收入</label>
+    <label><input type="radio" name="reality-profile" value="retired"> 退休金或津貼</label>
+    <label><input type="radio" name="reality-profile" value="other"> 其他收入</label>
+  </fieldset>
+  <label class="reality-label" for="reality-income" id="reality-income-label">每月實際入帳的工作收入（扣掉已代扣的部分）</label>
+  <input id="reality-income" type="number" min="0" max="1000000000" step="100" inputmode="numeric" placeholder="請輸入自己真正拿到的金額">
+  <p class="muted">不要用全國平均薪資替代你的收入，也不要把 29,500 元最低月薪（稅前）當成每個人的實領。</p>
+  <details class="reality-note"><summary>為什麼新聞說平均月薪 71,165 元，我卻沒有？</summary>
+    <p>主計總處 2026 年 7 月統計：全體受僱員工「平均總薪資」71,165 元，含平均 21,674 元非經常性薪資；經常性薪資的平均數是 49,491 元，中位數是 39,629 元。這些是全台不同定義的統計值，不是屏東人實領的平均值，也不能直接當每個人的固定收入。</p>
+    <p>2026 年最低月薪 29,500 元是<strong>稅前法定最低金額</strong>，不等於入帳金額。</p>
+    <p>來源：<a href="https://www.stat.gov.tw/News_Content.aspx?n=3703&amp;s=236702" target="_blank" rel="noopener">主計總處 2026 年 7 月薪資新聞稿</a>、<a href="https://www.mol.gov.tw/1607/28162/28166/28180/28182/28188/29025/" target="_blank" rel="noopener">勞動部最低工資說明</a>。</p>
+  </details>
+  <h3>我每個月真的需要支付哪些錢？</h3>
+  <p class="muted">填自己實際支出；沒有的項目可填 0，沒填的項目會提醒尚未完整。這些不是政府估算的個人生活費。</p>
+  <div class="reality-grid">
+    <label for="reality-food">吃飯、食物、買菜（元）<input id="reality-food" type="number" inputmode="numeric" min="0" placeholder="每月多少？"></label>
+    <label for="reality-housing">房租／必要住房費（元）<input id="reality-housing" type="number" inputmode="numeric" min="0" placeholder="沒有填 0"></label>
+    <label for="reality-utilities">水、電、瓦斯（元）<input id="reality-utilities" type="number" inputmode="numeric" min="0" placeholder="每月多少？"></label>
+    <label for="reality-transport">通勤、油費、必要交通（元）<input id="reality-transport" type="number" inputmode="numeric" min="0" placeholder="每月多少？"></label>
+    <label for="reality-health">就醫、藥品、例行醫療（元）<input id="reality-health" type="number" inputmode="numeric" min="0" placeholder="每月多少？"></label>
+  </div>
+  <details class="reality-note"><summary>補充其他必要支出（照護、通信、債務等）</summary>
+    <div class="reality-grid">
+      <label for="reality-care">子女／長者照護（元）<input id="reality-care" type="number" min="0" inputmode="numeric" placeholder="沒有填 0"></label>
+      <label for="reality-communication">基本電話／網路（元）<input id="reality-communication" type="number" min="0" inputmode="numeric" placeholder="沒有填 0"></label>
+      <label for="reality-obligations">必要債務最低還款（元）<input id="reality-obligations" type="number" min="0" inputmode="numeric" placeholder="沒有填 0"></label>
+      <label for="reality-other">其他不可省必要費用（元）<input id="reality-other" type="number" min="0" inputmode="numeric" placeholder="沒有填 0"></label>
+    </div><p class="muted">如果住房已包含房貸，不要在債務還款欄再扣同一筆錢。</p>
+  </details>
+  <label class="reality-check"><input type="checkbox" id="reality-confirm"> 我已填完全部必要支出；沒有的項目也已填 0</label>
+  <p id="reality-status" role="status" aria-live="polite" class="warning">正在準備試算……</p>
+  <div class="reality-outcome" aria-live="polite">
+    <div><div class="muted">扣掉已輸入的必要支出，暫時剩下</div><div class="big" id="reality-left">—</div></div>
+    <div><div class="muted">每月已輸入必要支出合計</div><div class="big" id="reality-basket">—</div></div>
+  </div>
+  <p id="reality-data-check" class="muted">你輸入的費用不是政府樣本價格。</p>
+  <div class="reality-takeaway"><h3>白話結論</h3><p id="reality-takeaway">輸入實際入帳收入與必要支出後顯示。</p></div>
+  <details class="reality-note"><summary>一份便當，要工作幾分鐘才能買？</summary>
+    <p>請填自己真的買到的價格；沒有經過同規格採樣之前，<strong>不會假稱屏東或日本的便當平均售價</strong>。</p>
+    <label for="reality-bento">最近買的一份便當實售價（元）<input id="reality-bento" type="number" min="0" inputmode="decimal" placeholder="填店家實收的價格"></label>
+    <div id="reality-worker-only"><label for="reality-hours">這個月實際工作的總時數（小時）<input id="reality-hours" type="number" min="0" inputmode="decimal" placeholder="依實際工時填入"></label></div>
+    <p class="big" id="reality-bento-result">—</p><p class="muted" id="reality-bento-detail">尚未輸入。</p>
+    <p class="muted">台日同規格、同份量便當實價與十年漲幅尚在資料稽核，沒有可靠資料就不發布誰漲得比較快的結論。</p>
+  </details>
+  <details class="reality-note"><summary>如果突然需要自費醫療，會吃掉多少積蓄？</summary>
+    <p>以下只是假設支出，不代表診斷、醫院報價、實際自付義務或破產風險；請以醫療院所及健保署的資料查證。</p>
+    <div class="reality-grid">
+      <label for="reality-savings">目前可動用儲蓄（元）<input id="reality-savings" type="number" min="0" inputmode="numeric" placeholder="自行填寫"></label>
+      <label for="reality-shock">假設一次性自付醫療費（元）<input id="reality-shock" type="number" min="0" inputmode="numeric" placeholder="自行填寫假設金額"></label>
+    </div><p class="big" id="reality-shock-result">—</p><p class="muted" id="reality-shock-detail">只做財務壓力試算，不推定任何疾病費用。</p>
+    <p><a href="https://info.nhi.gov.tw/INAE2000/INAE2012S01" target="_blank" rel="noopener">健保署自費醫材查詢</a></p>
+  </details>
+  <p class="muted">隱私：你的收入和家庭支出只在這個瀏覽器畫面中計算，不傳送到網站伺服器，也不儲存到本機；重新整理後須重新輸入。</p>
+</section>
 <section class="card"><h2>① 想比較多久以前？</h2><div class="choice" id="periods" aria-label="比較時間">
 <button type="button" data-p="6" aria-pressed="false">半年</button><button type="button" data-p="12" aria-pressed="true">1 年</button><button type="button" data-p="36" aria-pressed="false">3 年</button><button type="button" data-p="60" aria-pressed="false">5 年</button><button type="button" data-p="120" aria-pressed="false">10 年</button></div></section>
 <section class="card" id="living" aria-labelledby="livingTitle">
@@ -116,4 +174,4 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 <section class="card"><h2>進階試算：單一品項生活費</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
 <section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
 <details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
-</main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script></body></html>
+</main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script><script src="./reality_math.js"></script><script src="./reality.js"></script></body></html>
