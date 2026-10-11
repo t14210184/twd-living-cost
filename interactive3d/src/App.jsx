@@ -25,7 +25,7 @@ function ResponsiveCamera({mobile}){
  useEffect(()=>{
    // R3F Canvas camera={} is an INITIAL property. Explicitly update zoom
    // when a desktop viewport is resized to a narrow phone (or vice versa).
-   camera.zoom=mobile?14:36;
+   camera.zoom=mobile?17:36;
    camera.updateProjectionMatrix();
    const host=document.getElementById("living-city-root");
    if(host)host.dataset.cityCameraZoom=String(camera.zoom);
@@ -86,14 +86,14 @@ export default function App(){
     frameloop="demand"
     dpr={mobile?[1,1.1]:[1,1.35]}
     orthographic
-    camera={{position:[13,15,18],zoom:mobile?14:36,near:.1,far:120}}
+    camera={{position:[13,15,18],zoom:mobile?17:36,near:.1,far:120}}
     onCreated={({gl})=>{gl.setClearColor("#102b3a");const p=document.getElementById("living-city-root");if(p)p.dataset.cityReady="true";}}
     gl={{antialias:true,alpha:false,powerPreference:"low-power"}}
     style={{width:"100%",height:"100%",touchAction:"pan-y"}}>
     <ResponsiveCamera mobile={mobile}/>
     <FrameTicker animate={!motionOff}/>
     <CityScene state={state} selected={selected} onSelect={onSelect} motion={!motionOff}/>
-    <OrbitControls makeDefault enablePan={false} enableZoom={true} minZoom={mobile?11:24}
+    <OrbitControls makeDefault enablePan={false} enableZoom={true} minZoom={mobile?13:24}
       maxZoom={mobile?26:58} minPolarAngle={Math.PI*.24} maxPolarAngle={Math.PI*.48}
       enableDamping dampingFactor={.07} target={[0,.2,0]} />
   </Canvas>
