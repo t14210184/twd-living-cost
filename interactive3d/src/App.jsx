@@ -27,6 +27,8 @@ function ResponsiveCamera({mobile}){
    // when a desktop viewport is resized to a narrow phone (or vice versa).
    camera.zoom=mobile?14:36;
    camera.updateProjectionMatrix();
+   const host=document.getElementById("living-city-root");
+   if(host)host.dataset.cityCameraZoom=String(camera.zoom);
    invalidate();
  },[camera,invalidate,mobile]);
  return null;
