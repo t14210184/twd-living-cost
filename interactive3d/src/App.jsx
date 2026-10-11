@@ -1,5 +1,5 @@
 import React,{Component,useEffect,useState} from "react";
-import {Canvas} from "@react-three/fiber";
+import {Canvas,useThree} from "@react-three/fiber";
 import {OrbitControls} from "@react-three/drei";
 import CityScene from "./CityScene.jsx";
 
@@ -18,6 +18,18 @@ function supportsWebGL(){
   const context=canvas.getContext("webgl2",{failIfMajorPerformanceCaveat:true})||canvas.getContext("webgl");
   return !!context;
  }catch{return false;}
+}
+function FrameTicker({animate}){
+ const invalidate=useThree(s=>s.invalidate);
+ useEffect(()=>{
+   invalidate();
+   if(!animate)return undefined;
+   // ~15 FPS while animating is enough for the miniature street and prevents
+   // mobile battery drain / software WebGL from starving large accessible UI.
+   const timer=setInterval(()=>invalidate(),66);
+   return ()=>clearInterval(timer);
+ },[animate,invalidate]);
+ return null;
 }
 export default function App(){
  const [state,setState]=useState(()=>window.__livingCityState||{});
@@ -57,12 +69,14 @@ export default function App(){
  return <Boundary>
   <Canvas
     shadows={{type:2}}
-    dpr={mobile?[1,1.2]:[1,1.65]}
+    frameloop="demand"
+    dpr={mobile?[1,1.1]:[1,1.35]}
     orthographic
     camera={{position:[13,15,18],zoom:mobile?25:43,near:.1,far:120}}
     onCreated={({gl})=>{gl.setClearColor("#102b3a");const p=document.getElementById("living-city-root");if(p)p.dataset.cityReady="true";}}
     gl={{antialias:true,alpha:false,powerPreference:"low-power"}}
     style={{width:"100%",height:"100%",touchAction:"pan-y"}}>
+    <FrameTicker animate={!motionOff}/>
     <CityScene state={state} selected={selected} onSelect={onSelect} motion={!motionOff}/>
     <OrbitControls makeDefault enablePan={false} enableZoom={true} minZoom={mobile?20:30}
       maxZoom={mobile?39:70} minPolarAngle={Math.PI*.24} maxPolarAngle={Math.PI*.48}
