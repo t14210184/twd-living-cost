@@ -29,9 +29,22 @@ def verify_once():
         reality_math = read(session, "reality_math.js", release)
         reality_ui = read(session, "reality.js", release)
         reality_css = read(session, "reality.css", release)
+        play_math = read(session, "play_math.js", release)
+        play_ui = read(session, "play.js", release)
+        play_css = read(session, "play.css", release)
         remote_manifest = read(session, "data/manifest.json", release).json()
         data = read(session, "data/cpi.json", release).json()
         fxdata = read(session, "data/fx.json", release).json()
+    # v7.1: instant preset choices and editable play UI must be *truly on Pages*.
+    if 'id="play"' not in home.text or 'id="play-choices"' not in home.text or 'id="play-remaining"' not in home.text:
+        raise RuntimeError("One-tap senior living game not on public homepage")
+    if 'id="play-advanced"' not in home.text or 'id="play-quests"' not in home.text:
+        raise RuntimeError("Advanced analytics or inflation challenges missing")
+    if "PlayMath" not in play_math.text or "play-remaining" not in play_ui.text or ".play-choice" not in play_css.text:
+        raise RuntimeError("New responsive play CSS or calculation JavaScript not available")
+    for path in ("play_math.js","play.js","play.css"):
+        if 'href="./'+path+'"' not in home.text and 'src="./'+path+'"' not in home.text:
+            raise RuntimeError("Main homepage does not load "+path)
     # Contract: Pingtung TWD take-home and essential cost calculator comes first;
     # preserve v6.3 FX, CPI and same-month purchasing-power modules in same site.
     if 'id="reality"' not in home.text or 'id="reality-left"' not in home.text:
