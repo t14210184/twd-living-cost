@@ -78,7 +78,7 @@ G7 公開未登入網站端到端讀回，外部稽核能逐項重算。未完�
 - 主計總處 2026-09-14 公布 2026 年 7 月薪資：https://www.stat.gov.tw/News_Content.aspx?n=3703&s=236702
 - 勞動部 2026 年最低月薪 29,500：https://www.mol.gov.tw/1607/28162/28166/28180/28182/28188/29025/
 - 主計總處 2026 年 9 月 CPI 2.73%、PPI 18.12%、進口價格(USD) 24.07%：https://www.stat.gov.tw/News_Content.aspx?n=2668&s=236759
-- 日本政府官方 e-Stat「弁当 A/B/C」物價指數：https://www.e-stat.go.jp/stat-search/files?layout=dataset&page=1&query=%E3%83%91%E3%82%B9%E3%82%BF
+- 日本政府官方 e-Stat「弁当 A/B/C」物價指數：https://www.e-stat.go.jp/dbview?sid=0004052037
 - 國發會電子發票物價與方法：https://price.ndc.gov.tw/p/zh_tw/consult
 - 台灣癌症基金會乳癌調查（經中央社查證受訪樣本）：https://www.cna.com.tw/news/ahel/202411170143.aspx
 - 健保署自費醫材價差：https://info.nhi.gov.tw/INAE2000/INAE2012S01
