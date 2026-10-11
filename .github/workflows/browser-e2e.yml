@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/browser-e2e.yml'
       - 'ci/browser_e2e.py'
+      - 'ci/browser_reality_e2e.py'
 permissions:
   contents: read
 jobs:
@@ -26,7 +27,7 @@ jobs:
           for n in range(12):
               try:
                   r=requests.get(url,timeout=12,params={'run':n})
-                  if r.ok and 'id="living"' in r.text and 'id="lifeChart"' in r.text:
+                  if r.ok and 'id="living"' in r.text and 'id="lifeChart"' in r.text and 'id="reality"' in r.text:
                       print('Integrated public home is live',r.status_code); break
               except Exception as ex: print('Waiting for public site:',str(ex))
               if n==11: raise RuntimeError('Integrated homepage not yet live')
@@ -34,6 +35,8 @@ jobs:
           PY
       - name: Check integrated FX and necessities in actual Chrome (desktop + 390px mobile)
         run: python ci/browser_e2e.py
+      - name: Test v7 Pingtung livelihood in real Chrome
+        run: python ci/browser_reality_e2e.py
       - name: Upload real-browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
