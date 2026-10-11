@@ -39,6 +39,8 @@ try:
     assert "3,100" in driver.find_element(By.ID,"city-live-remaining").text
     assert "9,500" in driver.find_element(By.ID,"city-inspector-amount").text
     assert driver.find_element(By.ID,"play-advanced").get_attribute("open") is None
+    driver.execute_script("document.getElementById(\'living-city\').scrollIntoView({block:\'start\'})")
+    time.sleep(.4)
     driver.save_screenshot(str(OUT/"city_3d_desktop.png"))
 
     # Click a floating label rendered through React Three Fiber Html.
@@ -84,6 +86,8 @@ try:
     assert width<=viewport+2, f"Mobile horizontal overflow: {width}>{viewport}"
     assert driver.find_element(By.ID,"city-inspector-number").is_displayed() if driver.find_elements(By.ID,"city-inspector-number") else driver.find_element(By.ID,"city-inspector-amount").is_displayed()
     assert driver.execute_script("return localStorage.length")==0
+    driver.execute_script("document.getElementById(\'living-city\').scrollIntoView({block:\'start\'})")
+    time.sleep(.3)
     driver.save_screenshot(str(OUT/"city_3d_mobile_390.png"))
     print("3D REACT CITY E2E PASS public=",URL,"6 R3F hotspots; live Pingtung budget; mobile; fallback; H10/CPI intact",viewport)
 finally:
