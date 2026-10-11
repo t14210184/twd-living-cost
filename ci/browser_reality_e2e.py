@@ -18,6 +18,11 @@ options.add_argument("--window-size=1280,900")
 driver = webdriver.Chrome(options=options)
 try:
     driver.get(URL)
+    # Advanced research tools are intentionally collapsed for senior users.
+    # Open them only for legacy regression testing; the one-tap homepage stays first.
+    advanced=driver.find_element(By.ID,"play-advanced")
+    driver.execute_script("arguments[0].open=true;", advanced)
+    driver.execute_script("window.dispatchEvent(new Event('resize'));")
     w = WebDriverWait(driver, 45)
     w.until(lambda d: len(d.find_elements(By.ID, "reality")) == 1)
     assert len(driver.find_elements(By.ID, "fxChart")) == 1, "FX chart deleted"
