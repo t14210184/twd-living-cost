@@ -83,6 +83,9 @@
 @media(max-width:720px){
  .city-label{padding:4px 7px;font-size:12px;border-radius:8px;min-width:0}
  .city-label small{display:none}
+ .city-label:not(.active){display:none}
+ .city-canvas-corner{display:none}
+ .city-ui-hint{display:none}
  .city-ui-hint{font-size:12px}
  .city-shell{margin:15px 0;border-radius:19px}
  .city-bar{padding:13px 15px;min-height:75px}
