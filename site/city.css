@@ -1,0 +1,108 @@
+/* 3D SimCity-inspired HUD: large data, clickable town and accessible 2D controls.
+   Scene is decorative/interactive; the same controls always work without WebGL. */
+.city-shell{--city-ink:#f7fbff;--city-dark:#102837;--city-cyan:#a9f2e6;
+  margin:20px 0 26px;padding:0;border:1px solid #42737f;border-radius:27px;overflow:hidden;
+  box-shadow:0 14px 40px rgba(13,42,49,.18);background:#102837;color:var(--city-ink)}
+.city-shell *{box-sizing:border-box}
+.city-shell button{font:inherit;cursor:pointer}
+.city-shell button:focus-visible{outline:4px solid #ffca73;outline-offset:3px}
+.city-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:linear-gradient(130deg,#123341,#1f5360);border-bottom:1px solid #49737b;
+  padding:15px 20px;min-height:78px}
+.city-overline{font-size:15px;font-weight:850;letter-spacing:.09em;color:#aee7de}
+.city-title{font-size:clamp(23px,2.7vw,31px);font-weight:900;line-height:1.3;letter-spacing:-.03em;color:#fff}
+.city-live-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#62ebaf;box-shadow:0 0 0 4px #62ebaf22;margin-right:8px}
+.city-mode-button{border:1px solid #83bbc3;color:#edffff;background:#244a59;min-height:54px;
+  border-radius:13px;padding:10px 16px;font-weight:800;font-size:18px;white-space:nowrap}
+.city-mode-button:hover,.city-mode-button[aria-pressed="true"]{background:#ffe7b5;color:#16303b;border-color:#ffe7b5}
+.city-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(265px,.37fr);min-height:490px;gap:0}
+.city-canvas-shell{position:relative;min-height:490px;overflow:hidden;background:radial-gradient(ellipse at 57% 37%,#32586b 2%,#112b3c 74%)}
+.city-canvas-shell:before{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
+ background:radial-gradient(ellipse at center,transparent 47%,#071a26a1 110%)}
+#living-city-root{position:absolute;inset:0;min-height:100%;width:100%;overflow:hidden}
+#living-city-root canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+.city-loading,.city-error{display:grid;place-content:center;text-align:center;height:100%;
+ min-height:320px;padding:18px;color:#d8f8f6;font-size:20px;font-weight:850}
+.city-error{background:radial-gradient(ellipse at center,#2b5d65,#102936)}
+.city-ui-hint{position:absolute;z-index:2;bottom:15px;left:50%;transform:translateX(-50%);
+ white-space:nowrap;font-size:14px;font-weight:750;color:#e8fcf7;
+ padding:7px 14px;border:1px solid #a3d5d35c;border-radius:999px;background:#102e42b5;pointer-events:none}
+.city-canvas-corner{position:absolute;top:14px;left:14px;z-index:3;padding:8px 13px;border:1px solid #ffffff44;
+ border-radius:12px;background:#103143bb;backdrop-filter:blur(10px);font-size:15px;color:#c4efec;font-weight:850;pointer-events:none}
+.city-float-score{position:absolute;bottom:15px;right:13px;z-index:3;display:flex;gap:9px;align-items:center;
+ padding:10px 13px;border:1px solid #9ee3d97a;border-radius:15px;
+ background:#092637d9;color:#fff;backdrop-filter:blur(14px)}
+.city-float-score small{display:block;color:#c4e8e5;font-size:15px}
+.city-float-score strong{font-size:24px;line-height:1.3;font-weight:950;font-variant-numeric:tabular-nums}
+.city-inspector{padding:22px;background:linear-gradient(170deg,#173f4d,#102b3a);
+  border-left:1px solid #436e7b;display:flex;flex-direction:column;gap:12px;justify-content:center;min-width:0}
+.city-inspector .city-inspector-eyebrow{font-size:15px;color:#96d9d6;font-weight:900}
+.city-inspector h3{font-size:clamp(24px,2.6vw,30px);margin:0;color:#fff}
+.city-inspector-number{font-size:clamp(30px,3.3vw,39px);font-variant-numeric:tabular-nums;
+ font-weight:950;line-height:1.2;color:#fbe2ac;overflow-wrap:anywhere}
+.city-inspector-explain{font-size:18px;line-height:1.55;color:#d5e9e9}
+.city-inspector .city-tag{display:inline-flex;align-items:center;gap:8px;font-size:16px;
+ font-weight:850;color:#c0e8de}
+.city-open-more{margin-top:8px;border:2px solid #6aabb1;background:#285969;color:#fff;
+ min-height:54px;border-radius:12px;padding:10px 14px;font-size:18px;font-weight:850}
+.city-open-more:hover{background:#3f7f86}
+.city-map-nav{padding:16px 18px 18px;background:#123240;border-top:1px solid #436e7b}
+.city-map-intro{font-size:16px;color:#d3eeea;margin:0 0 12px}
+.city-place-buttons{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.city-place-buttons button{min-height:65px;display:flex;align-items:center;justify-content:center;gap:4px;
+ flex-direction:column;border-radius:13px;border:2px solid #476c78;background:#244a59;color:#f4ffff;
+ font-size:16px;font-weight:850;padding:8px}
+.city-place-buttons button[aria-pressed="true"]{color:#14323d;background:#f9ddb1;border-color:#ffeac3}
+.city-place-buttons button:hover{border-color:#b3ebe0}
+.city-place-buttons .city-place-symbol{font-size:23px}
+.city-3d-label,.city-label{display:flex;align-items:center;justify-content:center;gap:3px;flex-direction:column;
+ color:#eafffa;background:#0d3b4fdf;border:1px solid #8bd3d5b6;border-radius:10px;
+ padding:7px 12px;white-space:nowrap;font-size:16px;font-weight:900;cursor:pointer;
+ box-shadow:0 4px 14px #091f2975}
+.city-label small{font-size:12px;color:#b1dad9}
+.city-label:hover,.city-label.active{background:#f9dfaf;color:#163545;border-color:#fff0c7}
+.city-label.active small{color:#425967}
+.city-simple-town{display:none;background:linear-gradient(125deg,#2b5160,#1c3b4c);padding:18px}
+.city-simple-town p{font-size:18px;color:#d7efec}
+.city-simple-town .city-simple-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.city-simple-town button{display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:4px;min-height:104px;font-weight:850;font-size:19px;color:#fff;border:2px solid #76adb0;
+ background:#285767;border-radius:14px}
+.city-simple-town button[aria-pressed="true"]{background:#ffe4b8;color:#173944}
+.city-simple-town button span{font-size:32px}
+.city-shell[data-city-simple="true"] .city-canvas-shell{display:none}
+.city-shell[data-city-simple="true"] .city-simple-town{display:block}
+.city-shell[data-city-simple="true"] .city-main{min-height:0}
+.city-note{color:#c6e2e1;font-size:15px;padding:12px 18px;background:#102837;border-top:1px solid #356072}
+.city-note strong{color:#fce0ab}
+@media(max-width:1000px){
+ .city-main{grid-template-columns:minmax(0,1fr) minmax(230px,.38fr)}
+ .city-place-buttons{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .city-canvas-shell{min-height:460px}
+}
+@media(max-width:720px){
+ .city-shell{margin:15px 0;border-radius:19px}
+ .city-bar{padding:13px 15px;min-height:75px}
+ .city-mode-button{white-space:normal;font-size:16px}
+ .city-main{grid-template-columns:1fr}
+ .city-canvas-shell{min-height:360px}
+ .city-inspector{border-left:0;border-top:1px solid #4c7781;padding:17px;gap:7px}
+ .city-inspector-number{font-size:35px}
+ .city-inspector-explain{font-size:18px}
+ .city-place-buttons{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .city-place-buttons button{min-height:66px;font-size:16px}
+ .city-simple-town .city-simple-buttons{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .city-float-score{bottom:12px;right:11px}
+ .city-float-score strong{font-size:22px}
+ .city-ui-hint{font-size:12px;bottom:68px}
+}
+@media(max-width:410px){
+ .city-canvas-shell{min-height:326px}
+ .city-main{min-height:0}
+ .city-place-buttons{gap:7px}
+ .city-place-buttons button{font-size:15px;min-height:68px;padding:4px}
+ .city-float-score{padding:8px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .city-shell *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+}
