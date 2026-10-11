@@ -81,7 +81,7 @@ try:
     assert driver.find_element(By.ID,"lifeChart")
     assert driver.find_element(By.ID,"chart")
     driver.set_window_size(390,844)
-    wait.until(lambda d:d.find_element(By.ID,"living-city-root").get_attribute("data-city-camera-zoom")=="14")
+    wait.until(lambda d:d.find_element(By.ID,"living-city-root").get_attribute("data-city-camera-zoom")=="17")
     time.sleep(.5)
     width=driver.execute_script("return document.documentElement.scrollWidth")
     viewport=driver.execute_script("return document.documentElement.clientWidth")
