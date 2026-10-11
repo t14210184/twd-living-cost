@@ -42,9 +42,46 @@ function syncInputs(){
 function setRole(id){
   current=api.preset(id);syncInputs();render();
 }
+let citySelected="home";
+const placeSymbols={home:"🏠",market:"🥬",lunch:"🍱",hospital:"🏥",utilities:"💡",fx:"🌍"};
+function selectCity(place){
+  if(!(place in placeSymbols))return;
+  citySelected=place;
+  for(const button of document.querySelectorAll("[data-city-place]"))
+    button.setAttribute("aria-pressed",String(button.dataset.cityPlace===place));
+  refreshCity();
+}
+function refreshCity(){
+  const r=api.calculate(current);
+  if(!r.ok)return;
+  const moneyValue=value=>"NT$ "+money(value);
+  const healthcare=(current.challenge.medical?"另外試試一次自費 30,000 元，不是每月要付":"平常每月醫療支出");
+  const entry={
+    home:{name:"住家",amount:moneyValue(current.expenses.housing),explain:"示範人物每月住房基本費用。要改成你家的房租，直接按下方的修改按鈕。"},
+    market:{name:"市場",amount:moneyValue(current.expenses.food),explain:"這是示範人物每月買菜、吃飯的總費用，不是市場真正調查價格。"},
+    lunch:{name:"便當店",amount:moneyValue(current.bento)+"／份",explain:"假設一份便當 "+money(current.bento)+" 元，"+(r.bentoMinutes!=null?"要用 "+r.bentoMinutes.toFixed(1)+" 分鐘到手工作收入買到。":"退休金不適合換算成工作分鐘。")+(current.challenge.bento?" 便當每份多 10 元的關卡正在進行。":"")},
+    hospital:{name:"醫院",amount:moneyValue(current.expenses.health)+"／月",explain:healthcare+". "+(current.challenge.medical?"假設存款還有 "+money(r.savingsAfter)+" 元。":"可點上方醫療關卡，看看一次性自費對存款的影響。")},
+    utilities:{name:"水電",amount:moneyValue(current.expenses.utilities+(current.challenge.power?500:0))+"／月",explain:"示範的水、電、瓦斯基本開支。"+(current.challenge.power?" 目前加上水電每月多 500 元的情境。":"")},
+    fx:{name:"世界匯率",amount:document.getElementById("play-official-fx")?.textContent||"—",explain:"這是官方美元／台幣過去一年參考匯率變化。它不等於台幣薪水直接增加，也不能單憑匯率證明便當為什麼漲。"}
+  }[citySelected];
+  text("city-inspector-title",placeSymbols[citySelected]+" "+entry.name);
+  text("city-inspector-amount",entry.amount);
+  text("city-inspector-info",entry.explain);
+  text("city-inspector-proof",citySelected==="fx"?"官方 H.10 月資料，有來源可查":"示範金額，可自行調整");
+  text("city-inspector-action",citySelected==="fx"?"打開匯率分析 ↓":"改一下這筆開支 ↓");
+  text("city-live-remaining",(r.remaining<0?"還差 NT$ ":"NT$ ")+money(r.remaining));
+  window.__livingCityState={
+    housing:current.expenses.housing,food:current.expenses.food,health:current.expenses.health,
+    bento:current.bento,utilities:current.expenses.utilities,medical:!!current.challenge.medical,
+    bentoShock:!!current.challenge.bento,power:!!current.challenge.power,
+    income:current.income,remaining:r.remaining,role:current.id
+  };
+  window.dispatchEvent(new CustomEvent("livingcity:state",{detail:window.__livingCityState}));
+}
 function render(){
   const r=api.calculate(current);
   if(!r.ok){text("play-remaining","請檢查數字");text("play-story",r.reason);return;}
+  refreshCity();
   $("play-scoreboard").dataset.level=r.level;
   $("play-impact").dataset.level=r.level;
   const badge=r.remaining<0?"錢不夠用":r.level==="tight"?"有點吃緊":"還有一點空間";
@@ -165,12 +202,44 @@ async function loadOfficial(){
     text("play-official-fx",safePercent(after/before-1));
     text("play-official-month",start.replace("M","/")+" → "+end.replace("M","/")+"，官方同月份");
     text("play-official-status","已接上真正官方歷史。房租是主計總處價格指數；美元是聯準會月平均參考匯率。兩者不能直接證明誰造成誰漲價。");
+    if(citySelected==="fx")refreshCity();
   }catch(err){
     text("play-official-rent","暫缺資料");
     text("play-official-fx","暫缺資料");
     text("play-official-status","官方比較暫時無法顯示："+err.message+"。不會拿示範價充當真實統計。");
   }
 }
+const cityShell=$("living-city");
+if(cityShell)cityShell.addEventListener("click",event=>{
+ const tile=event.target.closest("[data-city-place]");
+ if(tile){
+   const place=tile.dataset.cityPlace;
+   selectCity(place);
+   window.dispatchEvent(new CustomEvent("livingcity:select",{detail:{place}}));
+   return;
+ }
+ if(event.target.closest("#city-simple-toggle")){
+   const simple=cityShell.dataset.citySimple!=="true";
+   cityShell.dataset.citySimple=String(simple);
+   $("city-simple-toggle").setAttribute("aria-pressed",String(simple));
+   text("city-simple-toggle",simple?"切回 3D 街景":"切換簡單地圖");
+   return;
+ }
+ if(event.target.closest("#city-inspector-action")){
+   if(citySelected==="fx"){showAdvanced();return;}
+   const details=$("play-edit");if(details)details.open=true;
+   const expanded=document.querySelector("#play-need-list")?.closest("details");
+   if(expanded)expanded.open=true;
+   const targetMap={home:"housing",market:"food",hospital:"health",utilities:"utilities",lunch:"bento"};
+   const key=targetMap[citySelected];
+   const field=key==="bento"?$("play-bento"):$("play-expense-"+key);
+   if(field){
+     field.scrollIntoView({behavior:"smooth",block:"center"});
+     field.focus({preventScroll:true});
+   }
+ }
+});
+window.addEventListener("livingcity:select",event=>selectCity(event.detail?.place));
 makeExpenses();
 syncInputs();
 render();
