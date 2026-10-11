@@ -45,13 +45,13 @@ try:
     driver.find_element(By.CSS_SELECTOR,'[data-play-profile="elder"]').click()
     assert "退休" in driver.find_element(By.ID,"play-active-persona").text
     assert "6,300" in driver.find_element(By.ID,"city-inspector-amount").text
-    driver.find_element(By.CSS_SELECTOR,'[data-city-place="hospital"]').click()
+    driver.find_element(By.CSS_SELECTOR,'.city-map-nav [data-city-place="hospital"]').click()
     assert "1,900" in driver.find_element(By.ID,"city-inspector-amount").text
     driver.find_element(By.CSS_SELECTOR,'[data-play-challenge="medical"]').click()
     assert "30,000" in driver.find_element(By.ID,"city-inspector-info").text
 
     driver.find_element(By.CSS_SELECTOR,'[data-play-profile="worker"]').click()
-    driver.find_element(By.CSS_SELECTOR,'[data-city-place="fx"]').click()
+    driver.find_element(By.CSS_SELECTOR,'.city-map-nav [data-city-place="fx"]').click()
     wait.until(lambda d:"%" in d.find_element(By.ID,"city-inspector-amount").text)
     assert "H.10" in driver.find_element(By.ID,"city-inspector-proof").text
 
