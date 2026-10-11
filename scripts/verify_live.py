@@ -32,9 +32,20 @@ def verify_once():
         play_math = read(session, "play_math.js", release)
         play_ui = read(session, "play.js", release)
         play_css = read(session, "play.css", release)
+        city_css = read(session, "city.css", release)
+        city_bundle = read(session, "scene-assets/living-city.js", release)
         remote_manifest = read(session, "data/manifest.json", release).json()
         data = read(session, "data/cpi.json", release).json()
         fxdata = read(session, "data/fx.json", release).json()
+    # v7.2: the interactive React-Three-Fiber island must be bundled and actually public.
+    if 'id="living-city-root"' not in home.text or 'id="city-inspector-title"' not in home.text:
+        raise RuntimeError("Interactive 3D city + expense HUD absent from public HTML")
+    if 'scene-assets/living-city.js' not in home.text or 'city.css' not in home.text:
+        raise RuntimeError("3D module or accessible companion style not referenced")
+    if len(city_bundle.content) < 100000 or "livingcity:select" not in city_bundle.text:
+        raise RuntimeError("Real compiled 3D interactive JavaScript missing or incomplete")
+    if ".city-shell" not in city_css.text or "city-map-nav" not in city_css.text:
+        raise RuntimeError("3D city responsive HUD and accessible fallback CSS missing")
     # v7.1: instant preset choices and editable play UI must be *truly on Pages*.
     if 'id="play"' not in home.text or 'id="play-choices"' not in home.text or 'id="play-remaining"' not in home.text:
         raise RuntimeError("One-tap senior living game not on public homepage")
