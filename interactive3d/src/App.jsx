@@ -19,6 +19,18 @@ function supportsWebGL(){
   return !!context;
  }catch{return false;}
 }
+function ResponsiveCamera({mobile}){
+ const camera=useThree(s=>s.camera);
+ const invalidate=useThree(s=>s.invalidate);
+ useEffect(()=>{
+   // R3F Canvas camera={} is an INITIAL property. Explicitly update zoom
+   // when a desktop viewport is resized to a narrow phone (or vice versa).
+   camera.zoom=mobile?14:36;
+   camera.updateProjectionMatrix();
+   invalidate();
+ },[camera,invalidate,mobile]);
+ return null;
+}
 function FrameTicker({animate}){
  const invalidate=useThree(s=>s.invalidate);
  useEffect(()=>{
@@ -76,6 +88,7 @@ export default function App(){
     onCreated={({gl})=>{gl.setClearColor("#102b3a");const p=document.getElementById("living-city-root");if(p)p.dataset.cityReady="true";}}
     gl={{antialias:true,alpha:false,powerPreference:"low-power"}}
     style={{width:"100%",height:"100%",touchAction:"pan-y"}}>
+    <ResponsiveCamera mobile={mobile}/>
     <FrameTicker animate={!motionOff}/>
     <CityScene state={state} selected={selected} onSelect={onSelect} motion={!motionOff}/>
     <OrbitControls makeDefault enablePan={false} enableZoom={true} minZoom={mobile?11:24}
