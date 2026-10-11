@@ -1,0 +1,23 @@
+/* Accessible Taiwanese elderly-first first fold, no external fonts. */
+.reality-card{border:2px solid #b7d8c8;background:#f9fffb}
+.reality-card h2{font-size:clamp(24px,4vw,32px);line-height:1.35}
+.reality-card .reality-profiles{border:1px solid #bccfd0;border-radius:12px;padding:14px;margin:18px 0}
+.reality-card .reality-profiles legend{font-weight:750;padding:0 8px}
+.reality-card .reality-profiles label{display:inline-flex;align-items:center;gap:9px;min-height:52px;margin:5px 14px 5px 0;cursor:pointer}
+.reality-card input[type=radio],.reality-card input[type=checkbox]{width:25px;height:25px;accent-color:#087550;cursor:pointer}
+.reality-card .reality-label{font-weight:750;display:block}
+.reality-card .reality-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:12px 0}
+.reality-card .reality-grid label{font-size:20px;display:block;min-width:0}
+.reality-card input[type=number]{width:100%;max-width:100%;font-size:22px;min-height:56px;background:white}
+.reality-card .reality-check{display:flex;align-items:center;gap:12px;cursor:pointer;margin:18px 0;min-height:50px}
+.reality-card .reality-outcome{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0}
+.reality-card .reality-outcome>div{min-width:0;background:#e7f4ee;border:1px solid #bbdccc;border-radius:14px;padding:15px}
+.reality-card .reality-outcome .big{overflow-wrap:anywhere}
+.reality-card .reality-takeaway{background:#e7f4ee;border-left:5px solid #087550;padding:15px;border-radius:8px;margin:15px 0}
+.reality-card .reality-takeaway h3{margin:0 0 10px}
+.reality-card .reality-takeaway p{margin:0}
+.reality-card .reality-negative{color:#9a2424}
+.reality-card .reality-note{border-bottom:1px solid #c4d6d0;padding:10px 0}
+.reality-card .reality-note summary{cursor:pointer;min-height:52px;font-weight:750}
+.reality-card .reality-note a{overflow-wrap:anywhere}
+@media(max-width:650px){.reality-card .reality-grid,.reality-card .reality-outcome{grid-template-columns:1fr}}
