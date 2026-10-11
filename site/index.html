@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>台灣庶民生存購買力｜到手收入・必要開支・匯率</title>
+<title>日子有感｜屏東生活闖關・每月剩多少？</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#16324a;font:20px/1.65 system-ui,-apple-system,"Noto Sans TC",sans-serif}
 main{max-width:1000px;margin:auto;padding:14px}.hero{background:#133f60;color:white;border-radius:20px;padding:28px}
@@ -16,8 +16,96 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 #lifeForeignBox[hidden],#lifeTwdBox[hidden]{display:none}#lifeChart{height:260px}
 @media(max-width:680px){.life-results{grid-template-columns:1fr}.life-expenses{grid-template-columns:1fr}}
 @media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
-</style><link rel="stylesheet" href="./reality.css"></head>
-<body><main><header class="hero"><h1>台幣收入，真的夠過日子嗎？</h1><p>從屏東庶民的生活出發：先看每月真正到手多少，食、住、行、醫扣完還剩多少。再往下比較八種外幣和官方物價。<br>不用安裝、不用註冊、不用上傳資料。</p></header>
+</style><link rel="stylesheet" href="./reality.css"><link rel="stylesheet" href="./play.css"></head>
+<body><main><div class="play-stage" id="play">
+  <header class="play-banner">
+    <span class="play-logo"><span aria-hidden="true">◉</span> 日子有感 · 台灣生活帳</span>
+    <h1>一個月忙到尾，<br>錢還剩多少？</h1>
+    <p>先選一種生活，馬上算給你看。<br>不用填表，點一下就知道。</p>
+    <p class="play-banner-small">從屏東出發 · 再比日本與國際匯率 · 手機、電腦都能用</p>
+  </header>
+  <section class="play-surface" aria-labelledby="play-roles-heading">
+    <p class="play-eyebrow">第 1 關／選一種生活</p>
+    <h2 id="play-roles-heading">你想先看誰的日子？</h2>
+    <p class="play-note">這是四種「可以改」的示範生活，先看看，不用先填收入。</p>
+    <div class="play-choices" id="play-choices" role="group" aria-label="選擇生活示範">
+      <button class="play-choice" type="button" data-play-profile="worker" aria-pressed="true"><span class="play-avatar" aria-hidden="true">👷</span><span class="play-choice-title">一個人上班</span><span class="play-choice-money">月入 30,000 元</span><span class="play-choice-desc">一份薪水養自己</span></button>
+      <button class="play-choice" type="button" data-play-profile="couple" aria-pressed="false"><span class="play-avatar" aria-hidden="true">🏠</span><span class="play-choice-title">兩人一起養家</span><span class="play-choice-money">月入 58,000 元</span><span class="play-choice-desc">兩份薪水、一起花</span></button>
+      <button class="play-choice" type="button" data-play-profile="elder" aria-pressed="false"><span class="play-avatar" aria-hidden="true">🧓</span><span class="play-choice-title">退休長輩</span><span class="play-choice-money">月入 18,000 元</span><span class="play-choice-desc">退休金與津貼</span></button>
+      <button class="play-choice" type="button" data-play-profile="parent" aria-pressed="false"><span class="play-avatar" aria-hidden="true">👩‍👧</span><span class="play-choice-title">一個人帶小孩</span><span class="play-choice-money">月入 32,000 元</span><span class="play-choice-desc">一份薪水撐一家</span></button>
+    </div>
+    <p class="play-demo"><strong>先提醒：</strong>上面金額、租金、便當與醫療費都是我們設計的<strong>示範情境</strong>，不是屏東實際平均收入或店家報價。每個數字都能自己改。</p>
+  </section>
+  <section class="play-live" aria-labelledby="play-result-heading">
+    <article class="play-scoreboard" id="play-scoreboard" data-level="tight">
+      <div class="play-score-top"><p class="play-eyebrow" style="margin:0">第 2 關／看錢去哪裡</p><span class="play-badge" id="play-level">有點吃緊</span></div>
+      <h2 id="play-result-heading" style="margin-top:14px">這個月，還剩下</h2>
+      <div class="play-score" id="play-remaining" aria-live="polite">NT$ 3,100</div>
+      <p class="play-score-caption" id="play-active-persona">一個人上班的示範生活</p>
+      <div class="play-money-flow">
+        <div><small>每月入帳</small><strong id="play-income-show">30,000 元</strong></div>
+        <div><small>每月必要開銷</small><strong id="play-cost-show">26,900 元</strong></div>
+      </div>
+      <div class="play-meter-heading"><strong id="play-meter-title">薪水已花掉 90%</strong><span>深色：必要開支／淺色：其他</span></div>
+      <div class="play-meter" role="progressbar" id="play-meter" aria-label="每月收入用在必要開支的比例" aria-valuemin="0" aria-valuemax="100" aria-valuenow="90"><div class="play-meter-fill" id="play-meter-fill" style="width:90%"></div></div>
+      <p class="play-moral" id="play-story" aria-live="polite">每賺 100 元，大約有 90 元得拿去過生活。剩下的，還要應付臨時開銷。</p>
+    </article>
+    <aside class="play-meal-card" aria-labelledby="play-meal-heading">
+      <div class="play-meal-icon" aria-hidden="true">🍱</div>
+      <h3 id="play-meal-heading">買一份便當，<br>要忙多久？</h3>
+      <div class="play-meal-number" id="play-meal-number">35.2 分鐘</div>
+      <p class="play-meal-sub" id="play-meal-text">示範 100 元便當，依到手收入與每月 176 小時換算。</p>
+      <p class="play-small">不是便當行情；比較台日真正實價需要同份量證據。</p>
+    </aside>
+  </section>
+  <section class="play-quests" id="play-quests" aria-labelledby="play-quests-heading">
+    <p class="play-eyebrow">第 3 關／點一下，生活有什麼變化？</p>
+    <h2 id="play-quests-heading">物價再漲，撐得住嗎？</h2>
+    <p class="play-note">按一下開始，再按一次取消。可以同時選好幾關。</p>
+    <div class="play-quests-grid" id="play-quests-grid" role="group" aria-label="試試生活壓力變化">
+      <button type="button" class="play-quest" data-play-challenge="bento" aria-pressed="false"><span class="play-quest-icon" aria-hidden="true">🍱</span><strong>便當再漲 10 元</strong><span id="play-bento-quest-desc">每月買 22 份，多花 220 元</span></button>
+      <button type="button" class="play-quest" data-play-challenge="power" aria-pressed="false"><span class="play-quest-icon" aria-hidden="true">💡</span><strong>水電多 500 元</strong><span>每個月都要多付</span></button>
+      <button type="button" class="play-quest" data-play-challenge="medical" aria-pressed="false"><span class="play-quest-icon" aria-hidden="true">🏥</span><strong>突然自費 3 萬元</strong><span>一次扣儲蓄，不是月費</span></button>
+    </div>
+    <div class="play-impact" id="play-impact" data-level="tight" role="status" aria-live="polite">
+      <strong id="play-impact-title">先點一關，看看差別</strong>
+      <p id="play-impact-text">錢不會自己變多，先看看哪一種漲價最有感。</p>
+      <p id="play-impact-medical" class="play-stress-sub">看病費用是示範壓力，不是醫院報價或每個人必付的金額。</p>
+    </div>
+  </section>
+  <details class="play-easy-edit" id="play-edit">
+    <summary>✏️ 想改成你家的數字？點這裡</summary>
+    <div class="play-edit-inner">
+      <p class="play-note">先用示範數字也可以。按「－」「＋」就能修改，不用一直打字。改好馬上更新結果。</p>
+      <div class="play-tuners">
+        <div class="play-tuner"><label for="play-income">每月真正拿到的錢（元）</label><div class="play-stepper"><button type="button" data-play-step="income" data-direction="-1" aria-label="收入減 1000 元">－</button><input id="play-income" data-play-input="income" type="number" min="0" max="1000000000" step="1000" inputmode="numeric" value="30000"><button type="button" data-play-step="income" data-direction="1" aria-label="收入加 1000 元">＋</button></div><p>已扣勞健保等代扣費用才算「到手」。</p></div>
+        <div class="play-tuner"><label for="play-bento">一份便當多少錢？（元）</label><div class="play-stepper"><button type="button" data-play-step="bento" data-direction="-1" aria-label="便當價格減 10 元">－</button><input id="play-bento" data-play-input="bento" type="number" min="0" max="10000" step="10" inputmode="numeric" value="100"><button type="button" data-play-step="bento" data-direction="1" aria-label="便當價格加 10 元">＋</button></div><p>目前 100 元是示範價，不是官方平均售價。</p></div>
+        <div class="play-tuner"><label for="play-savings">手上可動用存款（元）</label><div class="play-stepper"><button type="button" data-play-step="savings" data-direction="-1" aria-label="存款減一萬元">－</button><input id="play-savings" data-play-input="savings" type="number" min="0" max="1000000000" step="10000" inputmode="numeric" value="30000"><button type="button" data-play-step="savings" data-direction="1" aria-label="存款加一萬元">＋</button></div></div>
+        <div class="play-tuner"><label for="play-meals">這個月買幾份便當？</label><div class="play-stepper"><button type="button" data-play-step="meals" data-direction="-1" aria-label="便當份數減一份">－</button><input id="play-meals" data-play-input="meals" type="number" min="0" max="1000" step="1" inputmode="numeric" value="22"><button type="button" data-play-step="meals" data-direction="1" aria-label="便當份數加一份">＋</button></div></div>
+        <div class="play-tuner"><label for="play-hours">全家有收入者每月工時（小時）</label><div class="play-stepper"><button type="button" data-play-step="hours" data-direction="-1" aria-label="每月工時減 8 小時">－</button><input id="play-hours" data-play-input="hours" type="number" min="0" max="20000" step="8" inputmode="numeric" value="176"><button type="button" data-play-step="hours" data-direction="1" aria-label="每月工時加 8 小時">＋</button></div><p>只有上班情境會換算工作分鐘。</p></div>
+      </div>
+      <details class="play-subedit"><summary>🍚 房租、伙食、水電還想逐項調？</summary><div class="play-need-list" id="play-need-list"></div></details>
+      <button type="button" class="play-reset" id="play-reset">↺ 還原這個人物的示範數字</button>
+    </div>
+  </details>
+  <section class="play-facts" id="play-facts" aria-labelledby="play-facts-heading">
+    <p class="play-eyebrow">想知道真實物價與匯率？</p>
+    <h2 id="play-facts-heading">不是只有你覺得東西變貴</h2>
+    <p class="play-note">下面才是「官方歷史統計」。和上方示範家庭的預算不同，不要混為一談。</p>
+    <p id="play-official-status" class="play-note" role="status" aria-live="polite">正在讀取官方物價、匯率；沒有資料就不亂填。</p>
+    <div class="play-fact-grid">
+      <div class="play-fact"><span>最近一年，官方住宅租金價格指數</span><strong id="play-official-rent">—</strong><small id="play-official-month">等待共同月份</small></div>
+      <div class="play-fact"><span>最近一年，美元兌台幣參考價</span><strong id="play-official-fx">—</strong><small>美國聯準會 H.10 月資料，非銀行牌告價</small></div>
+    </div>
+    <p class="play-demo"><strong>台灣便當 VS 日本便當：</strong>真正同份量的售價與歷史還在採樣，現在不能下結論誰比較貴、誰漲得快。<a href="https://github.com/t14210184/twd-living-cost/issues/3">看查證進度</a>。</p>
+    <button class="play-reset" type="button" id="play-open-advanced">📈 我要看八國匯率、十年物價和所有圖表 ↓</button>
+  </section>
+  <p class="play-note" style="padding:12px 10px">隱私：所有家庭收入、支出和選擇只在你的瀏覽器當次畫面試算，不登入、不傳送，也不保存。重開網頁會回到示範生活。</p>
+</div>
+<details class="play-advanced" id="play-advanced">
+  <summary>📚 點這裡，打開完整的匯率與官方物價研究工具</summary>
+  <p>這裡保留八種外幣、半年至十年、台灣必需品物價與完整算法；內容比較詳細，平常不需要全部看完。</p>
+
 <section class="card reality-card" id="reality" aria-labelledby="reality-heading">
   <h2 id="reality-heading">我的台幣收入，夠不夠過生活？</h2>
   <p>以你的實際到手金額與必要開支計算。先知道每月剩多少錢，再研究通膨與國際匯率。</p>
@@ -174,4 +262,4 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 <section class="card"><h2>進階試算：單一品項生活費</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
 <section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
 <details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
-</main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script><script src="./reality_math.js"></script><script src="./reality.js"></script></body></html>
+</details></main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script><script src="./reality_math.js"></script><script src="./reality.js"></script><script src="./play_math.js"></script><script src="./play.js"></script></body></html>
