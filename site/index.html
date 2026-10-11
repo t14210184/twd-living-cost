@@ -16,7 +16,7 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 #lifeForeignBox[hidden],#lifeTwdBox[hidden]{display:none}#lifeChart{height:260px}
 @media(max-width:680px){.life-results{grid-template-columns:1fr}.life-expenses{grid-template-columns:1fr}}
 @media(max-width:600px){.cols{grid-template-columns:1fr}.hero,.card{padding:16px}h1{font-size:1.5rem}}
-</style><link rel="stylesheet" href="./reality.css"><link rel="stylesheet" href="./play.css"></head>
+</style><link rel="stylesheet" href="./reality.css"><link rel="stylesheet" href="./play.css"><link rel="stylesheet" href="./city.css"></head>
 <body><main><div class="play-stage" id="play">
   <header class="play-banner">
     <span class="play-logo"><span aria-hidden="true">◉</span> 日子有感 · 台灣生活帳</span>
@@ -36,7 +36,54 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
     </div>
     <p class="play-demo"><strong>先提醒：</strong>上面金額、租金、便當與醫療費都是我們設計的<strong>示範情境</strong>，不是屏東實際平均收入或店家報價。每個數字都能自己改。</p>
   </section>
-  <section class="play-live" aria-labelledby="play-result-heading">
+  <section class="city-shell" id="living-city" data-city-simple="false" aria-labelledby="city-title">
+  <div class="city-bar">
+    <div><div class="city-overline"><span class="city-live-dot"></span>生活小城 · 互動 3D</div>
+      <div class="city-title" id="city-title">看看你的錢花到哪裡</div></div>
+    <button type="button" class="city-mode-button" id="city-simple-toggle" aria-pressed="false">切換簡單地圖</button>
+  </div>
+  <div class="city-main">
+    <div class="city-canvas-shell">
+      <div class="city-canvas-corner" aria-hidden="true">屏東庶民生活 · 情境街區</div>
+      <div id="living-city-root" aria-label="可旋轉的 3D 生活街區：住家、市場、便當店、醫院、水電與外幣。可以點擊建築查看費用。">
+        <div class="city-loading">正在打開生活小城……</div>
+      </div>
+      <div class="city-float-score"><div><small>這個月暫時剩</small><strong id="city-live-remaining">NT$ 3,100</strong></div></div>
+    </div>
+    <div class="city-simple-town" id="city-simple-town" aria-label="無須操作 3D 的簡單地圖">
+      <p>不會轉 3D 也沒關係，直接點地點就能看。</p>
+      <div class="city-simple-buttons">
+        <button type="button" data-city-place="home" aria-pressed="true"><span aria-hidden="true">🏠</span>住家</button>
+        <button type="button" data-city-place="market" aria-pressed="false"><span aria-hidden="true">🥬</span>市場</button>
+        <button type="button" data-city-place="lunch" aria-pressed="false"><span aria-hidden="true">🍱</span>便當店</button>
+        <button type="button" data-city-place="hospital" aria-pressed="false"><span aria-hidden="true">🏥</span>醫院</button>
+        <button type="button" data-city-place="utilities" aria-pressed="false"><span aria-hidden="true">💡</span>水電</button>
+        <button type="button" data-city-place="fx" aria-pressed="false"><span aria-hidden="true">🌍</span>外幣</button>
+      </div>
+    </div>
+    <aside class="city-inspector" aria-live="polite" aria-labelledby="city-inspector-title">
+      <div class="city-inspector-eyebrow">你剛點的地方</div>
+      <h3 id="city-inspector-title">🏠 住家</h3>
+      <div class="city-inspector-number" id="city-inspector-amount">NT$ 9,500</div>
+      <div class="city-inspector-explain" id="city-inspector-info">這位示範人物每月房租與住家基本費用，會直接影響月底剩多少。</div>
+      <div class="city-tag" id="city-inspector-proof">假設數字，可自己改</div>
+      <button type="button" class="city-open-more" id="city-inspector-action">改一下這筆開支 ↓</button>
+    </aside>
+  </div>
+  <div class="city-map-nav"><p class="city-map-intro">點建築，或點下面的大按鈕；每個地點都有自己的生活費。</p>
+    <div class="city-place-buttons" role="group" aria-label="點選生活支出場所">
+      <button type="button" data-city-place="home" aria-pressed="true"><span class="city-place-symbol" aria-hidden="true">🏠</span>住家</button>
+      <button type="button" data-city-place="market" aria-pressed="false"><span class="city-place-symbol" aria-hidden="true">🥬</span>市場</button>
+      <button type="button" data-city-place="lunch" aria-pressed="false"><span class="city-place-symbol" aria-hidden="true">🍱</span>便當店</button>
+      <button type="button" data-city-place="hospital" aria-pressed="false"><span class="city-place-symbol" aria-hidden="true">🏥</span>醫院</button>
+      <button type="button" data-city-place="utilities" aria-pressed="false"><span class="city-place-symbol" aria-hidden="true">💡</span>水電</button>
+      <button type="button" data-city-place="fx" aria-pressed="false"><span class="city-place-symbol" aria-hidden="true">🌍</span>外幣</button>
+    </div>
+  </div>
+  <p class="city-note"><strong>別看錯：</strong>街景與家庭開支是可改的示範；匯率與物價的「官方歷史資料」另外清楚標出。3D 只是讓數字好懂，不代表真實屏東街道或商店價格。</p>
+</section>
+
+<section class="play-live" aria-labelledby="play-result-heading">
     <article class="play-scoreboard" id="play-scoreboard" data-level="tight">
       <div class="play-score-top"><p class="play-eyebrow" style="margin:0">第 2 關／看錢去哪裡</p><span class="play-badge" id="play-level">有點吃緊</span></div>
       <h2 id="play-result-heading" style="margin-top:14px">這個月，還剩下</h2>
@@ -262,4 +309,4 @@ label{display:block;font-weight:700;margin:12px 0}.big{font-weight:800;font-size
 <section class="card"><h2>進階試算：單一品項生活費</h2><label for="cost">這項生活費每月支出（新台幣）</label><input type="number" min="0" max="10000000" step="100" value="3000" id="cost"><div id="estimate" class="big" style="margin-top:12px">等待資料</div><p class="muted">這只是根據同一項物價指數推算的「相同消費組合」成本；不是實際歷史收據，更不是政府認定的生存最低支出。</p></section>
 <section class="card"><h2>資料有多新？</h2><p id="status" role="status" aria-live="polite" class="warning">準備讀取官方已發布資料；目前不提供假數字。</p>
 <details><summary>查看資料來源及算法</summary><p>資料來源：行政院主計總處 <a href="https://data.gov.tw/dataset/9158">消費者物價基本分類暨項目群指數</a>，依<a href="https://data.gov.tw/license">政府資料開放授權條款第 1 版</a>使用並標註。本站只在兩期都有同項、同基期觀測時計算（期末÷期初－1）×100%。</p><p><a href="https://github.com/t14210184/twd-living-cost">查看公開程式與施工狀態</a></p></details></section>
-</details></main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script><script src="./reality_math.js"></script><script src="./reality.js"></script><script src="./play_math.js"></script><script src="./play.js"></script></body></html>
+</details></main><script src="./app.js"></script><script src="./fx.js"></script><script src="./life_math.js"></script><script src="./life.js"></script><script src="./reality_math.js"></script><script src="./reality.js"></script><script src="./play_math.js"></script><script src="./play.js"></script><script defer src="./scene-assets/living-city.js"></script></body></html>
