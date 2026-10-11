@@ -39,7 +39,10 @@ jobs:
           node --check site/fx.js
           node --check site/life_math.js
           node --check site/life.js
+          node --check site/reality_math.js
+          node --check site/reality.js
           node --test tests/life.test.cjs
+          node --test tests/reality.test.cjs
           grep -q 'id="fxChart"' site/index.html
           grep -q 'id="living"' site/index.html
           grep -q 'id="lifeChart"' site/index.html
