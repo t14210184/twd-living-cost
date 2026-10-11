@@ -21,11 +21,19 @@ opts.add_argument("--enable-unsafe-swiftshader")
 opts.add_argument("--use-angle=swiftshader")
 opts.add_argument("--window-size=1440,900")
 opts.add_argument("--lang=zh-TW")
+opts.set_capability("goog:loggingPrefs",{"browser":"ALL"})
 driver=webdriver.Chrome(options=opts)
 try:
     driver.get(URL)
     wait=WebDriverWait(driver,60)
-    wait.until(lambda d:d.find_element(By.ID,"living-city-root").get_attribute("data-city-ready")=="true")
+    try:
+        wait.until(lambda d:d.find_element(By.ID,"living-city-root").get_attribute("data-city-ready")=="true")
+    except Exception:
+        details=driver.execute_script("return {html:document.getElementById('living-city-root')?.outerHTML?.slice(0,1400),scripts:[...document.scripts].map(x=>({url:x.src,loaded:x.readyState})).slice(-8),webgl2:!!document.createElement('canvas').getContext('webgl2'),simple:document.getElementById('living-city')?.dataset.citySimple}")
+        print("CITY_WEBGL_DIAGNOSTIC",repr(details),flush=True)
+        for row in driver.get_log("browser")[-30:]:print("CITY_CONSOLE",row,flush=True)
+        driver.save_screenshot(str(OUT/"city_3d_failure_diagnostic.png"))
+        raise
     wait.until(lambda d:len(d.find_elements(By.CSS_SELECTOR,"#living-city-root canvas"))==1)
     wait.until(lambda d:len(d.find_elements(By.CSS_SELECTOR,"button.city-label"))==6)
     assert "3,100" in driver.find_element(By.ID,"city-live-remaining").text
