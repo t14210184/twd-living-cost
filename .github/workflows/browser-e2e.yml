@@ -6,6 +6,8 @@ on:
       - '.github/workflows/browser-e2e.yml'
       - 'ci/browser_e2e.py'
       - 'ci/browser_reality_e2e.py'
+      - 'ci/browser_city_e2e.py'
+      - 'ci/browser_play_e2e.py'
 permissions:
   contents: read
 jobs:
@@ -24,19 +26,26 @@ jobs:
           python - <<'PY'
           import requests,time
           url='https://t14210184.github.io/twd-living-cost/'
-          for n in range(12):
+          for n in range(40):
               try:
                   r=requests.get(url,timeout=12,params={'run':n})
-                  if r.ok and 'id="living"' in r.text and 'id="lifeChart"' in r.text and 'id="reality"' in r.text:
+                  if r.ok and 'id="living"' in r.text and 'id="living-city-root"' in r.text and 'scene-assets/living-city.js' in r.text:
+                      js=requests.get(url+'scene-assets/living-city.js',timeout=20)
+                      if not js.ok or len(js.content)<100000:
+                          raise ValueError('3D JavaScript has not been deployed yet')
                       print('Integrated public home is live',r.status_code); break
               except Exception as ex: print('Waiting for public site:',str(ex))
-              if n==11: raise RuntimeError('Integrated homepage not yet live')
-              time.sleep(5)
+              if n==39: raise RuntimeError('Integrated homepage not yet live')
+              time.sleep(6)
           PY
       - name: Check integrated FX and necessities in actual Chrome (desktop + 390px mobile)
         run: python ci/browser_e2e.py
       - name: Test v7 Pingtung livelihood in real Chrome
         run: python ci/browser_reality_e2e.py
+      - name: Validate real senior game presets and 390px scenario
+        run: python ci/browser_play_e2e.py
+      - name: Verify clickable WebGL 3D town, dynamic budget HUD and simple mode
+        run: python ci/browser_city_e2e.py
       - name: Upload real-browser screenshots
         if: always()
         uses: actions/upload-artifact@v4
