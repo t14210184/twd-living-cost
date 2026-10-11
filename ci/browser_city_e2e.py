@@ -36,6 +36,7 @@ try:
         raise
     wait.until(lambda d:len(d.find_elements(By.CSS_SELECTOR,"#living-city-root canvas"))==1)
     wait.until(lambda d:len(d.find_elements(By.CSS_SELECTOR,"button.city-label"))==6)
+    assert driver.find_element(By.ID,"living-city-root").get_attribute("data-city-camera-zoom")=="36", "Desktop camera zoom incorrect"
     assert "3,100" in driver.find_element(By.ID,"city-live-remaining").text
     assert "9,500" in driver.find_element(By.ID,"city-inspector-amount").text
     assert driver.find_element(By.ID,"play-advanced").get_attribute("open") is None
@@ -80,6 +81,7 @@ try:
     assert driver.find_element(By.ID,"lifeChart")
     assert driver.find_element(By.ID,"chart")
     driver.set_window_size(390,844)
+    wait.until(lambda d:d.find_element(By.ID,"living-city-root").get_attribute("data-city-camera-zoom")=="14")
     time.sleep(.5)
     width=driver.execute_script("return document.documentElement.scrollWidth")
     viewport=driver.execute_script("return document.documentElement.clientWidth")
