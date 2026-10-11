@@ -10,7 +10,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,3 +20,12 @@ jobs:
         run: python -m pip install 'selenium>=4.25,<5'
       - name: Open live site in actual Chrome and verify interactive WebGL
         run: python ci/browser_city_smoke.py
+      - name: Click React 3D landmarks, change person and compare FX on mobile
+        run: python ci/browser_city_e2e.py
+      - name: Save real 3D desktop and mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: city-3d-real-chrome
+          path: browser-artifacts/
+          if-no-files-found: ignore
