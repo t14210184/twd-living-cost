@@ -26,13 +26,23 @@ def verify_once():
         fxjs = read(session, "fx.js", release)
         lifemath = read(session, "life_math.js", release)
         lifeui = read(session, "life.js", release)
+        reality_math = read(session, "reality_math.js", release)
+        reality_ui = read(session, "reality.js", release)
+        reality_css = read(session, "reality.css", release)
         remote_manifest = read(session, "data/manifest.json", release).json()
         data = read(session, "data/cpi.json", release).json()
         fxdata = read(session, "data/fx.json", release).json()
-    if not ("台灣生活費" in home.text and "site" not in BASE):
-        # The content check is mandatory, but the URL may contain arbitrary subpaths.
-        if "台灣生活費" not in home.text:
-            raise RuntimeError("Site HTML not the expected senior-friendly dashboard")
+    # Contract: Pingtung TWD take-home and essential cost calculator comes first;
+    # preserve v6.3 FX, CPI and same-month purchasing-power modules in same site.
+    if 'id="reality"' not in home.text or 'id="reality-left"' not in home.text:
+        raise RuntimeError("Pingtung livelihood primary screen missing")
+    if "台幣收入" not in home.text or 'id="fxChart"' not in home.text:
+        raise RuntimeError("Pingtung hero or legacy foreign-exchange module missing")
+    if "RealityMath" not in reality_math.text or "reality-left" not in reality_ui.text or ".reality-card" not in reality_css.text:
+        raise RuntimeError("Pingtung lifestyle calculation assets missing")
+    for path in ("reality_math.js", "reality.js", "reality.css"):
+        if 'href="./'+path+'"' not in home.text and 'src="./'+path+'"' not in home.text:
+            raise RuntimeError("Pingtung page does not load "+path)
     if 'id="living"' not in home.text or 'id="lifeChart"' not in home.text or 'data-life-mode="twd"' not in home.text:
         raise RuntimeError("The integrated senior purchasing-power home page is missing")
     if "LifeMath" not in lifemath.text or "purchasingChange" not in lifeui.text or 'fx.release_id' not in lifemath.text + lifeui.text and 'meta.fx?.release_id' not in lifeui.text:
