@@ -19,6 +19,11 @@ driver=webdriver.Chrome(options=opts)
 try:
     driver.set_window_size(1400,900)
     driver.get(URL)
+    # Advanced research tools are intentionally collapsed for senior users.
+    # Open them only for legacy regression testing; the one-tap homepage stays first.
+    advanced=driver.find_element(By.ID,"play-advanced")
+    driver.execute_script("arguments[0].open=true;", advanced)
+    driver.execute_script("window.dispatchEvent(new Event('resize'));")
     wait=WebDriverWait(driver,45)
     wait.until(lambda d: "聯準會 H.10 已載入" in d.find_element(By.ID,"fxStatus").text)
     wait.until(lambda d: "官方 CPI" in d.find_element(By.ID,"status").text)
