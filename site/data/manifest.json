@@ -5,16 +5,16 @@
     "source": "https://data.gov.tw/dataset/9158"
   },
   "fx": {
-    "common_daily_rows": 2561,
-    "complete_months": 123,
-    "coverage_start": "2016-07-11",
+    "common_daily_rows": 2560,
+    "complete_months": 122,
+    "coverage_start": "2016-07-18",
     "expected_frequency": "Federal Reserve H.10 generally released weekly",
-    "last_observed_date": "2026-10-09",
+    "last_observed_date": "2026-10-16",
     "reference_only": true,
-    "release_id": "63a589ad1376c9cc6ef272e310c16376b810809d7cc66682a1c5cae499211e9b",
+    "release_id": "8281b613a02bd35908b97e1fffeff28e91f83e4fb5d17c4bd3dcce249b8bd148",
     "source": "https://www.federalreserve.gov/releases/h10/",
-    "source_prepared": "2026-10-13T14:26:43",
-    "source_zip_sha256": "c5b4309593cb217a3bba7d3951621299ff018ed7b8a9554790f52c8e8a5881fd",
+    "source_prepared": "2026-10-19T14:55:07",
+    "source_zip_sha256": "8f370f9c57b73e1c0b68a2ee72ddecd3abaffb21fa627fcfd4f8a3612798c6a8",
     "status": "VERIFIED_H10"
   },
   "release_id": "4b3222f2de7c4ae2ad65905700ec58b8424be54a70cf09781bddfea25014e527",
